@@ -3,70 +3,53 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dealer CPS + Kadai Ledger v2</title>
+  <title>Dealer CPS + Multi Kadai v4</title>
   <style>
     :root{
-      --bg:#eef4fb; --card:#fff; --ink:#0f172a; --muted:#64748b; --line:#d8e2ef;
-      --brand:#2563eb; --brand2:#1e40af; --ok:#16a34a; --danger:#dc2626; --warn:#f59e0b;
-      --soft:#f8fafc; --shadow:0 14px 35px rgba(15,23,42,.08); --radius:18px;
+      --bg:#eef4fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#d8e2ef;
+      --brand:#2563eb;--brand2:#1e40af;--ok:#16a34a;--danger:#dc2626;--warn:#f59e0b;
+      --soft:#f8fafc;--shadow:0 14px 35px rgba(15,23,42,.08);--radius:18px;
+      --goodbg:#dcfce7;--good:#166534;--badbg:#fee2e2;--bad:#991b1b;--warnbg:#fef3c7;--warnfg:#92400e;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;background:linear-gradient(135deg,#eaf2fb,#f8fafc);color:var(--ink);
-      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Myanmar",Arial,sans-serif;
-    }
-    .app{max-width:1280px;margin:auto;padding:16px}
+    body{margin:0;background:linear-gradient(135deg,#eaf2fb,#f8fafc);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Myanmar",Arial,sans-serif}
+    .app{max-width:1380px;margin:auto;padding:16px}
     .topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}
-    .title{font-size:24px;font-weight:950}
-    .subtitle{font-size:13px;color:var(--muted);font-weight:700;margin-top:3px;line-height:1.5}
+    .title{font-size:26px;font-weight:950}.subtitle{font-size:13px;color:var(--muted);font-weight:700;margin-top:3px;line-height:1.55}
     .tabs{display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#eaf2fb,#f8fafc);padding:10px 0}
-    .tab{border:1px solid var(--line);background:white;color:var(--ink);padding:10px 13px;border-radius:999px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(15,23,42,.04)}
-    .tab.active{background:var(--brand);border-color:var(--brand);color:white}
-    .page{display:none}.page.active{display:block}
-    .grid{display:grid;gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .tab{border:1px solid var(--line);background:#fff;color:var(--ink);padding:10px 13px;border-radius:999px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(15,23,42,.04)}
+    .tab.active{background:var(--brand);border-color:var(--brand);color:#fff}.page{display:none}.page.active{display:block}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
     .card h2,.card h3{margin:0 0 12px}.card h2{font-size:20px}.card h3{font-size:17px}
+    .grid{display:grid;gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}.row.two{grid-template-columns:repeat(2,minmax(0,1fr))}.row.three{grid-template-columns:repeat(3,minmax(0,1fr))}
     label{display:block;margin:0 0 6px;color:var(--muted);font-size:12px;font-weight:900}
-    input,select,textarea{
-      width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);
-      padding:10px 11px;font-size:15px;outline:none
-    }
-    input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-    .row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
-    .row.two{grid-template-columns:repeat(2,minmax(0,1fr))}.row.three{grid-template-columns:repeat(3,minmax(0,1fr))}.row.five{grid-template-columns:repeat(5,minmax(0,1fr))}
-    .btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    button{border:0;background:var(--brand);color:white;border-radius:12px;padding:10px 13px;font-weight:950;cursor:pointer;box-shadow:0 8px 18px rgba(37,99,235,.16)}
-    button:hover{background:var(--brand2)}button.ok{background:var(--ok)}button.ok:hover{background:#15803d}
-    button.danger{background:var(--danger)}button.danger:hover{background:#b91c1c}
-    button.dark{background:#0f172a}button.dark:hover{background:#334155}
-    button.ghost{background:white;color:var(--ink);border:1px solid var(--line);box-shadow:none}button.ghost:hover{background:var(--soft)}
-    .notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:16px;padding:11px 13px;font-weight:800;font-size:13px;line-height:1.65;margin-bottom:12px}
-    .warnbox{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:16px;padding:11px 13px;font-weight:850;font-size:13px;line-height:1.65;margin-bottom:12px}
-    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
-    .stat{background:white;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:0 6px 18px rgba(15,23,42,.05)}
-    .stat .k{font-size:12px;color:var(--muted);font-weight:900}.stat .v{font-size:20px;font-weight:950;margin-top:3px}
-    .tablewrap{overflow:auto;border-radius:16px;border:1px solid var(--line);background:white}
-    table{width:100%;border-collapse:collapse;background:white}
-    th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;font-size:14px;vertical-align:middle;white-space:nowrap}
-    th{background:#f1f5f9;color:#334155;font-size:12px;text-transform:uppercase;letter-spacing:.25px}
-    tr:last-child td{border-bottom:0}.num{text-align:right;font-variant-numeric:tabular-nums}.center{text-align:center}
-    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:950;background:#e0f2fe;color:#075985}
-    .pill.ok{background:#dcfce7;color:#166534}.pill.bad{background:#fee2e2;color:#991b1b}.pill.warn{background:#fef3c7;color:#92400e}.pill.dark{background:#e2e8f0;color:#0f172a}
-    .muted{color:var(--muted)}.small{font-size:12px;color:var(--muted);line-height:1.45}.right{text-align:right}.hidden{display:none!important}
-    .positive{color:#166534;font-weight:950}.negative{color:#b91c1c;font-weight:950}.zero{color:#475569;font-weight:950}
+    input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);padding:10px 11px;font-size:15px;outline:none}
+    input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    button{border:0;background:var(--brand);color:#fff;border-radius:12px;padding:10px 13px;font-weight:950;cursor:pointer;box-shadow:0 8px 18px rgba(37,99,235,.16)}
+    button:hover{background:var(--brand2)}button.ok{background:var(--ok)}button.danger{background:var(--danger)}button.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}button.ghost:hover{background:var(--soft)}
+    .btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:16px;padding:11px 13px;font-weight:800;font-size:13px;line-height:1.65;margin-bottom:12px}.warnbox{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:16px;padding:11px 13px;font-weight:850;font-size:13px;line-height:1.65;margin-bottom:12px}
+    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:0 6px 18px rgba(15,23,42,.05)}.stat .k{font-size:12px;color:var(--muted);font-weight:900}.stat .v{font-size:20px;font-weight:950;margin-top:3px}
+    .tablewrap{overflow:auto;border-radius:16px;border:1px solid var(--line);background:#fff}table{width:100%;border-collapse:collapse;background:#fff}th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;font-size:14px;vertical-align:middle;white-space:nowrap}th{background:#f1f5f9;color:#334155;font-size:12px;text-transform:uppercase;letter-spacing:.25px}tr:last-child td{border-bottom:0}.num{text-align:right;font-variant-numeric:tabular-nums}.center{text-align:center}.small{font-size:12px;color:var(--muted);line-height:1.45}.muted{color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:950;background:#e0f2fe;color:#075985}.pill.ok{background:var(--goodbg);color:var(--good)}.pill.bad{background:var(--badbg);color:var(--bad)}.pill.warn{background:var(--warnbg);color:var(--warnfg)}.pill.dark{background:#e2e8f0;color:#0f172a}
+    .receivefrom{color:#166534;font-weight:950}.payto{color:#b91c1c;font-weight:950}.zero{color:#475569;font-weight:950}
     .empty{padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:16px;background:var(--soft)}
-    .report-title{text-align:center;font-size:22px;font-weight:950;margin:0 0 6px}.report-sub{text-align:center;font-size:13px;color:#475569;font-weight:800;margin-bottom:12px}
-    .toast{position:fixed;right:18px;bottom:18px;background:#0f172a;color:white;padding:12px 14px;border-radius:14px;box-shadow:var(--shadow);display:none;z-index:99;font-weight:900}
-    @media(max-width:960px){.grid.two,.grid.three,.row,.row.two,.row.three,.row.five,.stats{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start}.tabs{flex-wrap:nowrap;overflow:auto}.tab{white-space:nowrap}.app{padding:12px}th,td{font-size:12px;padding:7px 5px}}
-    @media print{.tabs,.topbar .btns,.no-print,button,input,select,textarea,.toast{display:none!important}body{background:white}.app{max-width:none;padding:0}.card{box-shadow:none;border:0}.page{display:none!important}.page.print-target{display:block!important}.tablewrap{overflow:visible;border:0}th,td{white-space:normal}}
+    .image-board{background:linear-gradient(180deg,#ffffff,#f8fbff);border:1px solid #cfe0f5;border-radius:24px;padding:18px;box-shadow:0 18px 40px rgba(15,23,42,.08)}
+    .image-header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.image-title{font-size:24px;font-weight:950}.image-sub{color:#64748b;font-size:12px;font-weight:800;margin-top:3px}.image-badge{padding:8px 10px;border-radius:999px;font-size:12px;font-weight:950;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+    .image-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}.sum-box{background:#fff;border:1px solid #dbe7f5;border-radius:18px;padding:12px}.sum-box .label{font-size:12px;color:#64748b;font-weight:900}.sum-box .big{font-size:22px;font-weight:950;margin-top:4px}
+    .section-title{font-size:16px;font-weight:950;margin:0 0 10px;color:#0f172a}.share-list{display:grid;gap:10px}.share-row{display:grid;grid-template-columns:1.3fr .7fr .8fr .9fr .9fr;gap:10px;align-items:center;padding:10px 12px;background:#fff;border:1px solid #dbe7f5;border-radius:16px}.share-row.head{background:#eff6ff;font-weight:950;color:#1e3a8a}.note-footer{margin-top:12px;padding-top:10px;border-top:1px dashed #d6e3f1;color:#64748b;font-size:12px;font-weight:800;line-height:1.5}.mono{font-variant-numeric:tabular-nums}.space{height:14px}
+    .toast{position:fixed;right:18px;bottom:18px;background:#0f172a;color:#fff;padding:12px 14px;border-radius:14px;box-shadow:var(--shadow);display:none;z-index:99;font-weight:900}
+    .hidden{display:none!important}
+    @media(max-width:980px){.grid.two,.grid.three,.row,.row.two,.row.three,.stats,.image-summary{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start}.tabs{flex-wrap:nowrap;overflow:auto}.tab{white-space:nowrap}.app{padding:12px}.share-row{grid-template-columns:1fr}th,td{font-size:12px;padding:7px 5px}.image-header{flex-direction:column}}
+    @media print{.tabs,.topbar .btns,.no-print,button,input,select,textarea,.toast{display:none!important}body{background:#fff}.app{max-width:none;padding:0}.card,.image-board{box-shadow:none;border:0}.page{display:none!important}.page.print-target{display:block!important}.tablewrap{overflow:visible;border:0}th,td{white-space:normal}}
   </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
     <div>
-      <div class="title">ဒိုင် စာရင်းရှင်း App v2</div>
-      <div class="subtitle">ကော်မရှင် → ဒိုင် → ကာဒိုင် အတွက် Total / Cor% / P Amount / P Rate / ကာသီးကြေး တစ်ခါထည့်တာနဲ့ အရှုံးအမြတ် Auto တွက်ပေးမယ်။</div>
+      <div class="title">ဒိုင် စာရင်းရှင်း App v4</div>
+      <div class="subtitle">Multi ကာဒိုင် support + တစ်ပုံတည်း Master Summary Image + တပတ်ရှင်း cumulative balance version</div>
     </div>
     <div class="btns no-print">
       <button class="ghost" onclick="exportBackup()">Backup JSON</button>
@@ -77,64 +60,56 @@
 
   <div class="tabs no-print">
     <button class="tab active" data-page="dashboard" onclick="showPage('dashboard')">Dashboard</button>
-    <button class="tab" data-page="daily" onclick="showPage('daily')">AM / PM / Daily</button>
-    <button class="tab" data-page="settlement" onclick="showPage('settlement')">နေ့ရှင်း / တပတ်ရှင်း</button>
-    <button class="tab" data-page="weekly" onclick="showPage('weekly')">Weekly List</button>
+    <button class="tab" data-page="daily" onclick="showPage('daily')">Daily Report</button>
+    <button class="tab" data-page="weekly" onclick="showPage('weekly')">Weekly Report</button>
+    <button class="tab" data-page="image" onclick="showPage('image')">Master Image</button>
     <button class="tab" data-page="settings" onclick="showPage('settings')">Settings</button>
   </div>
 
   <section id="dashboard" class="page active">
     <div class="stats" id="dashStats"></div>
-
     <div class="grid two">
       <div class="card">
         <h2>ကော်မရှင် စာရင်းသွင်းရန်</h2>
-        <div class="notice">
-          ကော်မရှင် Name ရွေးပြီး Total / P Amount ထည့်ပါ။ Setting ထဲက နာမည်အလိုက် Cor% နဲ့ P Rate ကို သုံးပြီး
-          <b>Balance = Total − Cor − P လျော်ကြေး</b> အဖြစ် Auto တွက်ပါမယ်။
-        </div>
+        <div class="notice">ကော်မရှင် Name ရွေးပြီး Total / P Amount ထည့်ပါ။ Settings ထဲက Cor% နှင့် P Rate ကို သုံးပြီး Auto တွက်မယ်။ တပတ်ရှင်း name များအတွက် balance ကို Monday မှ current date အထိ စုပေါင်းပြမယ်။</div>
         <div class="row three">
           <div><label>Date</label><input id="entryDate" type="date"></div>
           <div><label>Session</label><select id="entrySession"><option>AM</option><option>PM</option></select></div>
           <div><label>ကော်မရှင် Name</label><select id="entryName"></select></div>
         </div><br>
         <div class="row three">
-          <div><label>Total / ထိုးကြေး</label><input id="entryTotal" inputmode="decimal" placeholder="100000"></div>
-          <div><label>P Amount / ပေါက်အမောင့်</label><input id="entryPAmount" inputmode="decimal" placeholder="500"></div>
+          <div><label>Total</label><input id="entryTotal" inputmode="decimal" placeholder="100000"></div>
+          <div><label>P Amount</label><input id="entryPAmount" inputmode="decimal" placeholder="500"></div>
           <div><button class="ok" style="width:100%" onclick="saveCommissionEntry()">Save / Update</button></div>
         </div>
         <p class="small" id="entryHint"></p>
       </div>
 
       <div class="card">
-        <h2>ကာဒိုင် / ကာသီး စာရင်း</h2>
-        <div class="warnbox">
-          ဒိုင်က ကာဒိုင်ထံ ပို့တဲ့ <b>ကာသီး Total</b> နဲ့ <b>ကာဒိုင်ဘက် P Amount</b> ကို ထည့်ပါ။
-          ကာဒိုင်ထံက ပြန်ရတဲ့ Cor နဲ့ P လျော်ကြေးကို Setting ထဲက ကာဒိုင် Cor% / P Rate နဲ့ တွက်ပါမယ်။
-        </div>
+        <h2>ကာဒိုင် စာရင်းသွင်းရန်</h2>
+        <div class="warnbox">ကာဒိုင်များကို Settings မှာ လိုသလောက် ထည့်နိုင်ပါပြီ။ ကာဒိုင်ထံ ပေးရမည့် amount ကို အနီရောင်၊ ရမည့် amount ကို အစိမ်းရောင်ဖြင့် ပြထားမယ်။</div>
         <div class="row three">
-          <div><label>Date</label><input id="upperDate" type="date"></div>
-          <div><label>Session</label><select id="upperSession"><option>AM</option><option>PM</option></select></div>
-          <div><button class="ghost" style="width:100%" onclick="fillUpperFromCommission()">ကော်မရှင် Total ဖြင့် Auto Fill</button></div>
+          <div><label>Date</label><input id="kadaiDate" type="date"></div>
+          <div><label>Session</label><select id="kadaiSession"><option>AM</option><option>PM</option></select></div>
+          <div><label>ကာဒိုင် Name</label><select id="kadaiEntryName"></select></div>
         </div><br>
         <div class="row three">
-          <div><label>ကာသီး Total</label><input id="upperTotal" inputmode="decimal" placeholder="100000"></div>
-          <div><label>ကာဒိုင် P Amount</label><input id="upperPAmount" inputmode="decimal" placeholder="500"></div>
-          <div><button class="ok" style="width:100%" onclick="saveUpperEntry()">Save ကာဒိုင်</button></div>
+          <div><label>ကာသီး Total</label><input id="kadaiTotal" inputmode="decimal" placeholder="100000"></div>
+          <div><label>P Amount</label><input id="kadaiPAmount" inputmode="decimal" placeholder="500"></div>
+          <div><button class="ok" style="width:100%" onclick="saveKadaiEntry()">Save / Update</button></div>
         </div>
-        <p class="small" id="upperHint"></p>
+        <p class="small" id="kadaiHint"></p>
       </div>
     </div>
 
-    <br>
+    <div class="space"></div>
     <div class="card">
       <div class="row three no-print">
-        <div><label>ကြည့်မည့် Date</label><input id="viewDate" type="date" onchange="renderAll()"></div>
+        <div><label>ကြည့်မည့် Date</label><input id="viewDate" type="date" onchange="syncDatesFromView();renderAll()"></div>
         <div><label>Session Filter</label><select id="viewSession" onchange="renderAll()"><option value="ALL">AM + PM</option><option>AM</option><option>PM</option></select></div>
         <div class="btns"><button class="ghost" onclick="copyTodayText()">Copy Viber Text</button><button class="ghost" onclick="printPage('daily')">Print Report</button></div>
       </div>
-      <br class="no-print">
-      <h2>ယနေ့ Dashboard စာရင်း</h2>
+      <div class="space no-print"></div>
       <div id="dashboardTable"></div>
     </div>
   </section>
@@ -142,37 +117,42 @@
   <section id="daily" class="page">
     <div class="card">
       <div class="row three no-print">
-        <div><label>Report Date</label><input id="reportDate" type="date" onchange="syncReportDate();renderAll()"></div>
+        <div><label>Report Date</label><input id="reportDate" type="date" onchange="syncDatesFromView('report');renderAll()"></div>
         <div><label>Session</label><select id="reportSession" onchange="renderAll()"><option value="ALL">AM + PM</option><option>AM</option><option>PM</option></select></div>
-        <div class="btns"><button class="ghost" onclick="copyTodayText()">Copy</button><button class="ghost" onclick="printPage('daily')">Print</button></div>
+        <div class="btns"><button class="ghost" onclick="printPage('daily')">Print</button></div>
       </div>
-      <br class="no-print">
+      <div class="space no-print"></div>
       <div id="dailyReport"></div>
-    </div>
-  </section>
-
-  <section id="settlement" class="page">
-    <div class="grid two">
-      <div class="card">
-        <h2>နေ့ရှင်း စာရင်း</h2>
-        <div id="dailySettlement"></div>
-      </div>
-      <div class="card">
-        <h2>တပတ်ရှင်း စာရင်း</h2>
-        <div id="weeklyHolding"></div>
-      </div>
     </div>
   </section>
 
   <section id="weekly" class="page">
     <div class="card">
-      <div class="row three no-print">
-        <div><label>Week Start / Monday</label><input id="weekStart" type="date" onchange="renderAll()"></div>
-        <div><label>Name Filter</label><select id="weekName" onchange="renderAll()"></select></div>
+      <div class="row two no-print">
+        <div><label>Week Start / Monday</label><input id="weekStart" type="date" onchange="syncWeekToImage();renderAll()"></div>
         <div class="btns"><button class="ghost" onclick="setThisWeek()">This Week</button><button class="ghost" onclick="printPage('weekly')">Print Weekly</button></div>
       </div>
-      <br class="no-print">
+      <div class="space no-print"></div>
       <div id="weeklyReport"></div>
+    </div>
+  </section>
+
+  <section id="image" class="page">
+    <div class="card no-print">
+      <h2>Master Summary Image Controls</h2>
+      <div class="notice">ဒီတစ်ခုပဲ ကြည့်ပြီး ဒိုင်အနေနဲ့ — ဘယ်ကော်မရှင်ကို ဘယ်လောက်ပေးရမည် / ဘယ်သူထံမှ ဘယ်လောက်ရမည် / ဘယ်ကာဒိုင်ထံ ပေးရမည် / ရမည် ဆိုတာကို တစ်နေရာတည်းမှာ သိနိုင်ပါတယ်။ Screenshot ယူပြီး Viber မှ share လုပ်လို့လည်း ရပါတယ်။</div>
+      <div class="row two">
+        <div><label>Image Date</label><input id="imageDate" type="date" onchange="renderAll()"></div>
+        <div><label>Image Week Start (Monday)</label><input id="imageWeekStart" type="date" onchange="renderAll()"></div>
+      </div>
+      <div class="space"></div>
+      <div class="btns">
+        <button class="ghost" onclick="setImageThisWeek()">This Week</button>
+        <button class="ghost" onclick="printImageCard('masterImageCard')">Print Master Image</button>
+      </div>
+    </div>
+    <div id="masterImageCard" class="image-board">
+      <div id="masterImageContent"></div>
     </div>
   </section>
 
@@ -180,44 +160,45 @@
     <div class="grid two">
       <div class="card">
         <h2>ကော်မရှင် Name Settings</h2>
-        <div class="notice">Name တစ်ခုချင်းစီကို Cor% / P Rate / နေ့ရှင်း-တပတ်ရှင်း သတ်မှတ်ထားပါ။ နောက်နေ့တွေမှာ ထပ်လုပ်စရာမလိုပါ။ ပြောင်းချင်တဲ့အခါမှ Settings မှာပြင်ပါ။</div>
-        <input id="editNameId" type="hidden">
+        <div class="notice">Name တစ်ခုချင်းစီကို Cor% / P Rate / နေ့ရှင်း-တပတ်ရှင်း သတ်မှတ်ထားပါ။ တပတ်ရှင်း များကို daily display ထဲမှာလည်း Monday မှ ယနေ့အထိ cumulative balance ဖြင့်ပြမယ်။</div>
+        <input id="editCommId" type="hidden">
         <div class="row two">
-          <div><label>Name</label><input id="setName" placeholder="ဥပမာ မောင်အောင်"></div>
-          <div><label>Settlement Type</label><select id="setSettlement"><option value="daily">နေ့ရှင်း</option><option value="weekly">တပတ်ရှင်း</option></select></div>
-        </div><br>
+          <div><label>Name</label><input id="commName" placeholder="ဥပမာ မောင်အောင်"></div>
+          <div><label>Settlement Type</label><select id="commSettlement"><option value="daily">နေ့ရှင်း</option><option value="weekly">တပတ်ရှင်း</option></select></div>
+        </div><div class="space"></div>
         <div class="row three">
-          <div><label>Cor % ပေးရန်</label><input id="setCor" inputmode="decimal" placeholder="10"></div>
-          <div><label>P လျော်ကြေး Rate</label><input id="setRate" inputmode="decimal" placeholder="80"></div>
-          <div><button class="ok" style="width:100%" onclick="saveNameSetting()">Save Name</button></div>
+          <div><label>Cor %</label><input id="commCor" inputmode="decimal" placeholder="10"></div>
+          <div><label>P Rate</label><input id="commRate" inputmode="decimal" placeholder="80"></div>
+          <div><button class="ok" style="width:100%" onclick="saveCommissionName()">Save Name</button></div>
         </div>
-        <br>
-        <div id="namesTable"></div>
+        <div class="space"></div>
+        <div id="commTable"></div>
       </div>
 
       <div class="card">
         <h2>ကာဒိုင် Settings</h2>
-        <div class="warnbox">
-          ဒိုင်က ကာဒိုင်ထံ ကာသီးပို့တဲ့အခါ ကာဒိုင်ထံမှ ပြန်ရမည့် Cor% နဲ့ P Rate ကို ဒီမှာသတ်မှတ်ပါ။
-        </div>
+        <div class="warnbox">ကာဒိုင်များကို လိုသလောက် ထည့်နိုင်ပါတယ်။ ကာဒိုင်တစ်ယောက်ချင်းစီအတွက် Cor% နှင့် P Rate သတ်မှတ်နိုင်ပါတယ်။</div>
+        <input id="editKadaiId" type="hidden">
         <div class="row three">
-          <div><label>ကာဒိုင် Name</label><input id="kadaiName" placeholder="ကာဒိုင်"></div>
-          <div><label>ကာဒိုင် Cor% ပြန်ရ</label><input id="kadaiCor" inputmode="decimal" placeholder="10"></div>
-          <div><label>ကာဒိုင် P Rate ပြန်ရ</label><input id="kadaiRate" inputmode="decimal" placeholder="80"></div>
-        </div><br>
-        <button class="ok" onclick="saveKadaiSetting()">Save ကာဒိုင် Setting</button>
-        <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
-        <h3>Formula အဓိပ္ပါယ်</h3>
+          <div><label>ကာဒိုင် Name</label><input id="kadaiNameSet" placeholder="ဥပမာ ကာဒိုင် 1"></div>
+          <div><label>Cor % ပြန်ရ</label><input id="kadaiCorSet" inputmode="decimal" placeholder="10"></div>
+          <div><label>P Rate ပြန်ရ</label><input id="kadaiRateSet" inputmode="decimal" placeholder="80"></div>
+        </div>
+        <div class="space"></div>
+        <button class="ok" onclick="saveKadaiName()">Save ကာဒိုင်</button>
+        <div class="space"></div>
+        <div id="kadaiTable"></div>
+        <div class="space"></div>
         <div class="notice">
-          <b>ကော်မရှင်ဘက် Balance</b> = Total − ကော်မရှင်ကြေး − P လျော်ကြေး<br>
-          Positive ဖြစ်ရင် ကော်မရှင်ထံမှ ဒိုင် <b>ရမည်</b>။ Negative ဖြစ်ရင် ဒိုင်က ကော်မရှင်ထံ <b>ပေးရမည်</b>။<br><br>
-          <b>ကာဒိုင်ဘက် Balance</b> = ကာသီး Total − ကာဒိုင် Cor − ကာဒိုင် P လျော်ကြေး<br>
-          Positive ဖြစ်ရင် ဒိုင်က ကာဒိုင်ထံ <b>ပေးရမည်</b>။ Negative ဖြစ်ရင် ကာဒိုင်ထံမှ ဒိုင် <b>ရမည်</b>။<br><br>
-          <b>ဒိုင် အမြတ်/အရှုံး</b> = ကော်မရှင်ဘက် Balance − ကာဒိုင်ဘက် Balance
+          <b>ကော်မရှင်ဘက် Balance</b> = Total − Cor − P လျော်ကြေး<br>
+          Positive => ဒိုင်က <b>ရမည်</b> / Negative => ဒိုင်က <b>ပေးရမည်</b><br><br>
+          <b>ကာဒိုင်ဘက် Balance</b> = ကာသီး Total − Cor − P လျော်ကြေး<br>
+          Positive => ဒိုင်က ကာဒိုင်ထံ <b>ပေးရမည်</b> / Negative => ဒိုင်က ကာဒိုင်ထံမှ <b>ရမည်</b><br><br>
+          <b>ဒိုင် Net P/L</b> = Commission Net + Kadai Net(negative receive / positive pay)
         </div>
         <div class="btns">
           <button class="danger" onclick="clearToday()">ယနေ့စာရင်းဖျက်ရန်</button>
-          <button class="danger" onclick="resetAll()">App အားလုံး Reset</button>
+          <button class="danger" onclick="resetAll()">App Reset</button>
         </div>
       </div>
     </div>
@@ -226,448 +207,103 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='dealer_cps_kadai_v2';
+const KEY='dealer_cps_multi_kadai_v4';
 let state = loadState();
-
-function defaultState(){
-  return {
-    names:[
-      {id:uid(), name:'နမူနာနေ့ရှင်း', settlement:'daily', corPct:10, pRate:80, active:true},
-      {id:uid(), name:'နမူနာတပတ်ရှင်း', settlement:'weekly', corPct:10, pRate:80, active:true}
-    ],
-    kadai:{name:'ကာဒိုင်', corPct:10, pRate:80},
-    entries:[],
-    upperEntries:[]
-  };
-}
-function loadState(){
-  try{
-    const raw=localStorage.getItem(KEY);
-    if(!raw) return defaultState();
-    const obj=JSON.parse(raw);
-    obj.names=obj.names||[];
-    obj.entries=obj.entries||[];
-    obj.upperEntries=obj.upperEntries||[];
-    obj.kadai=obj.kadai||{name:'ကာဒိုင်',corPct:10,pRate:80};
-    return obj;
-  }catch(e){ return defaultState(); }
-}
-function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 function uid(){ return 'id_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8); }
 function today(){ return new Date().toISOString().slice(0,10); }
 function num(v){ if(v===undefined||v===null||v==='') return 0; return Number(String(v).replace(/,/g,''))||0; }
-function money(v){
-  const n=Number(v)||0;
-  return n.toLocaleString('en-US',{maximumFractionDigits:2});
-}
-function signedMoney(v){
-  const cls=v>0?'positive':v<0?'negative':'zero';
-  const sign=v>0?'+':'';
-  return `<span class="${cls}">${sign}${money(v)}</span>`;
-}
-function directionCommission(v){
-  if(v>0) return '<span class="pill ok">ကော်မရှင်ထံမှ ရမည်</span>';
-  if(v<0) return '<span class="pill bad">ကော်မရှင်ထံ ပေးရမည်</span>';
-  return '<span class="pill dark">ရှင်းပြီး</span>';
-}
-function directionUpper(v){
-  if(v>0) return '<span class="pill bad">ကာဒိုင်ထံ ပေးရမည်</span>';
-  if(v<0) return '<span class="pill ok">ကာဒိုင်ထံမှ ရမည်</span>';
-  return '<span class="pill dark">ရှင်းပြီး</span>';
-}
-function directionProfit(v){
-  if(v>0) return '<span class="pill ok">ဒိုင် မြတ်</span>';
-  if(v<0) return '<span class="pill bad">ဒိုင် ရှုံး</span>';
-  return '<span class="pill dark">မမြတ်/မရှုံး</span>';
-}
-function toast(msg){
-  const el=document.getElementById('toast'); el.textContent=msg; el.style.display='block';
-  setTimeout(()=>el.style.display='none',1800);
-}
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page===id));
-  renderAll();
-}
-function setDates(){
-  const t=today();
-  ['entryDate','upperDate','viewDate','reportDate'].forEach(id=>{ const el=document.getElementById(id); if(el && !el.value) el.value=t; });
-  setThisWeek(false);
-}
-function activeNames(){ return state.names.filter(n=>n.active!==false); }
-function nameById(id){ return state.names.find(n=>n.id===id) || {name:'-',corPct:0,pRate:0,settlement:'daily'}; }
+function money(v){ return (Number(v)||0).toLocaleString('en-US',{maximumFractionDigits:2}); }
+function esc(s){ return String(s??'').replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.style.display='block'; setTimeout(()=>el.style.display='none',1800); }
+function defaultState(){ return { commissions:[ {id:uid(),name:'နမူနာနေ့ရှင်း',settlement:'daily',corPct:10,pRate:80,active:true}, {id:uid(),name:'နမူနာတပတ်ရှင်း',settlement:'weekly',corPct:10,pRate:80,active:true} ], kadais:[ {id:uid(),name:'ကာဒိုင် 1',corPct:10,pRate:80,active:true} ], commissionEntries:[], kadaiEntries:[] }; }
+function loadState(){ try{ const raw=localStorage.getItem(KEY); if(!raw) return defaultState(); const o=JSON.parse(raw); o.commissions=o.commissions||[]; o.kadais=o.kadais||[]; o.commissionEntries=o.commissionEntries||[]; o.kadaiEntries=o.kadaiEntries||[]; return o; }catch(e){ return defaultState(); } }
+function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+function showPage(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page===id)); renderAll(); }
+function activeCommissions(){ return state.commissions.filter(x=>x.active!==false); }
+function activeKadais(){ return state.kadais.filter(x=>x.active!==false); }
+function commById(id){ return state.commissions.find(x=>x.id===id) || {name:'-',settlement:'daily',corPct:0,pRate:0}; }
+function kadaiById(id){ return state.kadais.find(x=>x.id===id) || {name:'-',corPct:0,pRate:0}; }
+function mondayOf(dateStr){ const d=new Date(dateStr+'T00:00:00'); const day=d.getDay(); const diff=(day===0?-6:1-day); d.setDate(d.getDate()+diff); return d.toISOString().slice(0,10); }
+function dateRange(start,end){ const a=[]; const s=new Date(start+'T00:00:00'); const e=new Date(end+'T00:00:00'); while(s<=e){ a.push(s.toISOString().slice(0,10)); s.setDate(s.getDate()+1); } return a; }
+function setThisWeek(doRender=true){ document.getElementById('weekStart').value=mondayOf(today()); if(doRender) renderAll(); }
+function setImageThisWeek(doRender=true){ document.getElementById('imageWeekStart').value=mondayOf(document.getElementById('imageDate').value||today()); if(doRender) renderAll(); }
+function syncWeekToImage(){ const v=document.getElementById('weekStart').value; if(v) document.getElementById('imageWeekStart').value=v; }
+function syncDatesFromView(src='view'){ const v=document.getElementById(src==='report'?'reportDate':'viewDate').value; if(v){ document.getElementById('viewDate').value=v; document.getElementById('reportDate').value=v; document.getElementById('imageDate').value=v; } }
+function setDates(){ const t=today(); ['entryDate','kadaiDate','viewDate','reportDate','imageDate'].forEach(id=>{ const el=document.getElementById(id); if(el && !el.value) el.value=t; }); document.getElementById('weekStart').value ||= mondayOf(t); document.getElementById('imageWeekStart').value ||= mondayOf(t); }
 
 function fillSelects(){
-  const opts = activeNames().map(n=>`<option value="${n.id}">${esc(n.name)} (${n.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'})</option>`).join('');
-  ['entryName'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=opts || '<option value="">Name မရှိသေးပါ</option>'; });
-  const week = document.getElementById('weekName');
-  if(week){
-    const cur=week.value;
-    week.innerHTML='<option value="ALL">All Names</option>'+activeNames().map(n=>`<option value="${n.id}">${esc(n.name)}</option>`).join('');
-    if([...week.options].some(o=>o.value===cur)) week.value=cur;
-  }
+  const commOpts=activeCommissions().map(n=>`<option value="${n.id}">${esc(n.name)} (${n.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'})</option>`).join('');
+  const kadaiOpts=activeKadais().map(n=>`<option value="${n.id}">${esc(n.name)}</option>`).join('');
+  const a=document.getElementById('entryName'); if(a){ const cur=a.value; a.innerHTML=commOpts || '<option value="">Name မရှိသေးပါ</option>'; if([...a.options].some(o=>o.value===cur)) a.value=cur; }
+  const b=document.getElementById('kadaiEntryName'); if(b){ const cur=b.value; b.innerHTML=kadaiOpts || '<option value="">ကာဒိုင် မရှိသေးပါ</option>'; if([...b.options].some(o=>o.value===cur)) b.value=cur; }
 }
-function esc(s){ return String(s??'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+function calcCommissionEntry(e){ const n=commById(e.nameId); const total=num(e.total), pAmount=num(e.pAmount), cor=total*num(n.corPct)/100, payout=pAmount*num(n.pRate), balance=total-cor-payout; return {name:n.name,settlement:n.settlement,corPct:num(n.corPct),pRate:num(n.pRate),total,pAmount,cor,payout,balance}; }
+function calcKadaiEntry(e){ const k=kadaiById(e.kadaiId); const total=num(e.total), pAmount=num(e.pAmount), cor=total*num(k.corPct)/100, payout=pAmount*num(k.pRate), balance=total-cor-payout; return {name:k.name,corPct:num(k.corPct),pRate:num(k.pRate),total,pAmount,cor,payout,balance}; }
+function filterCommission(date,session='ALL'){ return state.commissionEntries.filter(e=>e.date===date && (session==='ALL'||e.session===session)); }
+function filterKadai(date,session='ALL'){ return state.kadaiEntries.filter(e=>e.date===date && (session==='ALL'||e.session===session)); }
+function sumComm(list){ return list.reduce((a,e)=>{ const c=calcCommissionEntry(e); a.total+=c.total;a.pAmount+=c.pAmount;a.cor+=c.cor;a.payout+=c.payout;a.balance+=c.balance; return a; },{total:0,pAmount:0,cor:0,payout:0,balance:0}); }
+function sumKadai(list){ return list.reduce((a,e)=>{ const c=calcKadaiEntry(e); a.total+=c.total;a.pAmount+=c.pAmount;a.cor+=c.cor;a.payout+=c.payout;a.balance+=c.balance; return a; },{total:0,pAmount:0,cor:0,payout:0,balance:0}); }
+function commBalanceHtml(v){ const cls=v>0?'receivefrom':v<0?'payto':'zero'; const sign=v>0?'+':''; return `<span class="${cls}">${sign}${money(v)}</span>`; }
+function kadaiBalanceHtml(v){ const cls=v>0?'payto':v<0?'receivefrom':'zero'; const sign=v>0?'+':''; return `<span class="${cls}">${sign}${money(v)}</span>`; }
+function profitHtml(v){ const cls=v>0?'receivefrom':v<0?'payto':'zero'; const sign=v>0?'+':''; return `<span class="${cls}">${sign}${money(v)}</span>`; }
+function dirComm(v){ if(v>0) return '<span class="pill ok">ကော်မရှင်ထံမှ ရမည်</span>'; if(v<0) return '<span class="pill bad">ကော်မရှင်ထံ ပေးရမည်</span>'; return '<span class="pill dark">ရှင်းပြီး</span>'; }
+function dirKadai(v){ if(v>0) return '<span class="pill bad">ကာဒိုင်ထံ ပေးရမည်</span>'; if(v<0) return '<span class="pill ok">ကာဒိုင်ထံမှ ရမည်</span>'; return '<span class="pill dark">ရှင်းပြီး</span>'; }
+function profitDir(v){ if(v>0) return '<span class="pill ok">ဒိုင် မြတ်</span>'; if(v<0) return '<span class="pill bad">ဒိုင် ရှုံး</span>'; return '<span class="pill dark">မမြတ်/မရှုံး</span>'; }
 
-function calcCommission(e){
-  const n=nameById(e.nameId);
-  const total=num(e.total), pAmount=num(e.pAmount);
-  const cor=total*num(n.corPct)/100;
-  const payout=pAmount*num(n.pRate);
-  const balance=total-cor-payout;
-  return {total,pAmount,cor,payout,balance,corPct:num(n.corPct),pRate:num(n.pRate),name:n.name,settlement:n.settlement};
-}
-function calcUpper(u){
-  const total=num(u.kaTotal), pAmount=num(u.kaPAmount);
-  const cor=total*num(state.kadai.corPct)/100;
-  const payout=pAmount*num(state.kadai.pRate);
-  const balance=total-cor-payout;
-  return {total,pAmount,cor,payout,balance,corPct:num(state.kadai.corPct),pRate:num(state.kadai.pRate)};
-}
-function filterEntries(date, session='ALL'){
-  return state.entries.filter(e=>e.date===date && (session==='ALL'||e.session===session));
-}
-function filterUpper(date, session='ALL'){
-  return state.upperEntries.filter(e=>e.date===date && (session==='ALL'||e.session===session));
-}
-function sumCommission(list){
-  return list.reduce((a,e)=>{ const c=calcCommission(e); a.total+=c.total; a.pAmount+=c.pAmount; a.cor+=c.cor; a.payout+=c.payout; a.balance+=c.balance; return a; }, {total:0,pAmount:0,cor:0,payout:0,balance:0});
-}
-function sumUpper(list){
-  return list.reduce((a,e)=>{ const c=calcUpper(e); a.total+=c.total; a.pAmount+=c.pAmount; a.cor+=c.cor; a.payout+=c.payout; a.balance+=c.balance; return a; }, {total:0,pAmount:0,cor:0,payout:0,balance:0});
-}
-function profitFor(date, session='ALL'){
-  const c=sumCommission(filterEntries(date,session));
-  const u=sumUpper(filterUpper(date,session));
-  return {commission:c, upper:u, profit:c.balance-u.balance};
-}
+function saveCommissionEntry(){ const date=document.getElementById('entryDate').value||today(); const session=document.getElementById('entrySession').value; const nameId=document.getElementById('entryName').value; if(!nameId){ toast('ကော်မရှင် Name ထည့်ပါ'); return; } const total=num(document.getElementById('entryTotal').value), pAmount=num(document.getElementById('entryPAmount').value); const old=state.commissionEntries.find(e=>e.date===date&&e.session===session&&e.nameId===nameId); if(old){ old.total=total; old.pAmount=pAmount; } else state.commissionEntries.push({id:uid(),date,session,nameId,total,pAmount}); saveState(); document.getElementById('entryTotal').value=''; document.getElementById('entryPAmount').value=''; toast('ကော်မရှင်စာရင်း Save ပြီးပါပြီ'); renderAll(); }
+function saveKadaiEntry(){ const date=document.getElementById('kadaiDate').value||today(); const session=document.getElementById('kadaiSession').value; const kadaiId=document.getElementById('kadaiEntryName').value; if(!kadaiId){ toast('ကာဒိုင် Name ထည့်ပါ'); return; } const total=num(document.getElementById('kadaiTotal').value), pAmount=num(document.getElementById('kadaiPAmount').value); const old=state.kadaiEntries.find(e=>e.date===date&&e.session===session&&e.kadaiId===kadaiId); if(old){ old.total=total; old.pAmount=pAmount; } else state.kadaiEntries.push({id:uid(),date,session,kadaiId,total,pAmount}); saveState(); document.getElementById('kadaiTotal').value=''; document.getElementById('kadaiPAmount').value=''; toast('ကာဒိုင်စာရင်း Save ပြီးပါပြီ'); renderAll(); }
+function saveCommissionName(){ const id=document.getElementById('editCommId').value, name=document.getElementById('commName').value.trim(); if(!name){ toast('Name ထည့်ပါ'); return; } const obj={name,settlement:document.getElementById('commSettlement').value,corPct:num(document.getElementById('commCor').value),pRate:num(document.getElementById('commRate').value),active:true}; if(id){ const x=state.commissions.find(a=>a.id===id); if(x) Object.assign(x,obj); } else state.commissions.push({id:uid(),...obj}); saveState(); document.getElementById('editCommId').value=''; document.getElementById('commName').value=''; document.getElementById('commCor').value=''; document.getElementById('commRate').value=''; fillSelects(); renderAll(); toast('ကော်မရှင် Name Save ပြီးပါပြီ'); }
+function saveKadaiName(){ const id=document.getElementById('editKadaiId').value, name=document.getElementById('kadaiNameSet').value.trim(); if(!name){ toast('ကာဒိုင် Name ထည့်ပါ'); return; } const obj={name,corPct:num(document.getElementById('kadaiCorSet').value),pRate:num(document.getElementById('kadaiRateSet').value),active:true}; if(id){ const x=state.kadais.find(a=>a.id===id); if(x) Object.assign(x,obj); } else state.kadais.push({id:uid(),...obj}); saveState(); document.getElementById('editKadaiId').value=''; document.getElementById('kadaiNameSet').value=''; document.getElementById('kadaiCorSet').value=''; document.getElementById('kadaiRateSet').value=''; fillSelects(); renderAll(); toast('ကာဒိုင် Save ပြီးပါပြီ'); }
+function editComm(id){ const x=state.commissions.find(a=>a.id===id); if(!x) return; document.getElementById('editCommId').value=x.id; document.getElementById('commName').value=x.name; document.getElementById('commSettlement').value=x.settlement; document.getElementById('commCor').value=x.corPct; document.getElementById('commRate').value=x.pRate; showPage('settings'); }
+function editKadai(id){ const x=state.kadais.find(a=>a.id===id); if(!x) return; document.getElementById('editKadaiId').value=x.id; document.getElementById('kadaiNameSet').value=x.name; document.getElementById('kadaiCorSet').value=x.corPct; document.getElementById('kadaiRateSet').value=x.pRate; showPage('settings'); }
+function delComm(id){ if(!confirm('ဒီ ကော်မရှင် Name ကို ဖျက်မလား?')) return; state.commissions=state.commissions.filter(x=>x.id!==id); saveState(); fillSelects(); renderAll(); }
+function delKadai(id){ if(!confirm('ဒီ ကာဒိုင် Name ကို ဖျက်မလား?')) return; state.kadais=state.kadais.filter(x=>x.id!==id); saveState(); fillSelects(); renderAll(); }
+function delCommEntry(id){ if(!confirm('ဒီစာရင်းကို ဖျက်မလား?')) return; state.commissionEntries=state.commissionEntries.filter(x=>x.id!==id); saveState(); renderAll(); }
+function delKadaiEntry(id){ if(!confirm('ဒီစာရင်းကို ဖျက်မလား?')) return; state.kadaiEntries=state.kadaiEntries.filter(x=>x.id!==id); saveState(); renderAll(); }
 
-function saveCommissionEntry(){
-  const date=document.getElementById('entryDate').value || today();
-  const session=document.getElementById('entrySession').value;
-  const nameId=document.getElementById('entryName').value;
-  if(!nameId){ toast('Settings မှာ Name ထည့်ပါ'); return; }
-  const total=num(document.getElementById('entryTotal').value);
-  const pAmount=num(document.getElementById('entryPAmount').value);
-  const old=state.entries.find(e=>e.date===date && e.session===session && e.nameId===nameId);
-  if(old){ old.total=total; old.pAmount=pAmount; old.updatedAt=Date.now(); }
-  else state.entries.push({id:uid(), date, session, nameId, total, pAmount, createdAt:Date.now()});
-  saveState();
-  document.getElementById('entryTotal').value='';
-  document.getElementById('entryPAmount').value='';
-  toast('ကော်မရှင်စာရင်း Save ပြီးပါပြီ');
-  renderAll();
-}
-function saveUpperEntry(){
-  const date=document.getElementById('upperDate').value || today();
-  const session=document.getElementById('upperSession').value;
-  const kaTotal=num(document.getElementById('upperTotal').value);
-  const kaPAmount=num(document.getElementById('upperPAmount').value);
-  const old=state.upperEntries.find(e=>e.date===date && e.session===session);
-  if(old){ old.kaTotal=kaTotal; old.kaPAmount=kaPAmount; old.updatedAt=Date.now(); }
-  else state.upperEntries.push({id:uid(), date, session, kaTotal, kaPAmount, createdAt:Date.now()});
-  saveState();
-  toast('ကာဒိုင်စာရင်း Save ပြီးပါပြီ');
-  renderAll();
-}
-function fillUpperFromCommission(){
-  const date=document.getElementById('upperDate').value || today();
-  const session=document.getElementById('upperSession').value;
-  const s=sumCommission(filterEntries(date,session));
-  document.getElementById('upperTotal').value = s.total || '';
-  document.getElementById('upperPAmount').value = s.pAmount || '';
-  toast('ကော်မရှင် Total/P Amount ဖြင့် ဖြည့်ပြီးပါပြီ');
-}
-function editEntry(id){
-  const e=state.entries.find(x=>x.id===id); if(!e) return;
-  document.getElementById('entryDate').value=e.date;
-  document.getElementById('entrySession').value=e.session;
-  document.getElementById('entryName').value=e.nameId;
-  document.getElementById('entryTotal').value=e.total;
-  document.getElementById('entryPAmount').value=e.pAmount;
-  showPage('dashboard');
-  toast('Edit ပြင်ပြီး Save/Update နှိပ်ပါ');
-}
-function delEntry(id){
-  if(!confirm('ဒီစာရင်းကို ဖျက်မလား?')) return;
-  state.entries=state.entries.filter(e=>e.id!==id);
-  saveState(); renderAll();
-}
-function delUpper(id){
-  if(!confirm('ကာဒိုင်စာရင်းကို ဖျက်မလား?')) return;
-  state.upperEntries=state.upperEntries.filter(e=>e.id!==id);
-  saveState(); renderAll();
-}
+function dailyCommSummaryForName(nameId,date){ const list=state.commissionEntries.filter(e=>e.nameId===nameId && e.date===date); return sumComm(list); }
+function wtdCommSummaryForName(nameId,date){ const dates=dateRange(mondayOf(date),date); const list=state.commissionEntries.filter(e=>e.nameId===nameId && dates.includes(e.date)); return sumComm(list); }
+function dailyKadaiSummaryForName(kadaiId,date){ const list=state.kadaiEntries.filter(e=>e.kadaiId===kadaiId && e.date===date); return sumKadai(list); }
+function buildCommissionSettlementRows(date){ return activeCommissions().map(n=>{ const todaySum=dailyCommSummaryForName(n.id,date); const running = n.settlement==='weekly' ? wtdCommSummaryForName(n.id,date) : todaySum; return {id:n.id,name:n.name,type:n.settlement,todayBalance:todaySum.balance,runningBalance:running.balance,todayTotal:todaySum.total,runningTotal:running.total}; }).filter(r=>r.todayTotal!==0 || r.runningTotal!==0); }
+function buildKadaiRows(date){ return activeKadais().map(k=>{ const d=dailyKadaiSummaryForName(k.id,date); return {id:k.id,name:k.name,total:d.total,balance:d.balance}; }).filter(r=>r.total!==0 || r.balance!==0); }
+function masterTotals(date){ const commRows=buildCommissionSettlementRows(date), kadaiRows=buildKadaiRows(date); let commReceive=0, commPay=0, kadaiReceive=0, kadaiPay=0; commRows.forEach(r=>{ if(r.runningBalance>0) commReceive+=r.runningBalance; if(r.runningBalance<0) commPay+=Math.abs(r.runningBalance); }); kadaiRows.forEach(r=>{ if(r.balance<0) kadaiReceive+=Math.abs(r.balance); if(r.balance>0) kadaiPay+=r.balance; }); return {commRows,kadaiRows,commReceive,commPay,kadaiReceive,kadaiPay,net:(commReceive+kadaiReceive)-(commPay+kadaiPay)}; }
 
-function saveNameSetting(){
-  const id=document.getElementById('editNameId').value;
-  const name=document.getElementById('setName').value.trim();
-  if(!name){ toast('Name ထည့်ပါ'); return; }
-  const obj={name, settlement:document.getElementById('setSettlement').value, corPct:num(document.getElementById('setCor').value), pRate:num(document.getElementById('setRate').value), active:true};
-  if(id){
-    const n=state.names.find(x=>x.id===id);
-    if(n) Object.assign(n,obj);
-  }else{
-    state.names.push({id:uid(),...obj});
-  }
-  saveState();
-  document.getElementById('editNameId').value='';
-  document.getElementById('setName').value='';
-  document.getElementById('setCor').value='';
-  document.getElementById('setRate').value='';
-  fillSelects(); renderAll(); toast('Name Setting Save ပြီးပါပြီ');
+function renderStats(){ const date=document.getElementById('viewDate').value||today(); const comm=sumComm(filterCommission(date,'ALL')); const kd=sumKadai(filterKadai(date,'ALL')); const totals=masterTotals(date); document.getElementById('dashStats').innerHTML=[ ['ကော်မရှင် Today Balance',commBalanceHtml(comm.balance)], ['ကာဒိုင် Today Balance',kadaiBalanceHtml(kd.balance)], ['ကော်မရှင် ရမည်',profitHtml(totals.commReceive)], ['ကာဒိုင် ပေးရမည်',profitHtml(-totals.kadaiPay)], ['Net P/L',profitHtml(totals.net)] ].map(x=>`<div class="stat"><div class="k">${x[0]}</div><div class="v">${x[1]}</div></div>`).join(''); }
+function renderHints(){ const c=commById(document.getElementById('entryName').value); document.getElementById('entryHint').textContent=c.name?`Selected: ${c.name} | Cor ${money(c.corPct)}% | P Rate ${money(c.pRate)} | ${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}`:''; const k=kadaiById(document.getElementById('kadaiEntryName').value); document.getElementById('kadaiHint').textContent=k.name?`Selected: ${k.name} | Cor ${money(k.corPct)}% | P Rate ${money(k.pRate)}`:''; }
+function renderCommTable(){ const rows=state.commissions.map(n=>`<tr><td>${esc(n.name)}</td><td>${n.settlement==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td><button class="ghost" onclick="editComm('${n.id}')">Edit</button> <button class="danger" onclick="delComm('${n.id}')">Del</button></td></tr>`).join(''); document.getElementById('commTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">Cor%</th><th class="num">P Rate</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
+function renderKadaiTable(){ const rows=state.kadais.map(n=>`<tr><td>${esc(n.name)}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td><button class="ghost" onclick="editKadai('${n.id}')">Edit</button> <button class="danger" onclick="delKadai('${n.id}')">Del</button></td></tr>`).join(''); document.getElementById('kadaiTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Cor%</th><th class="num">P Rate</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="4" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
+function commissionEntryTable(date,session='ALL'){ const list=filterCommission(date,session); const rows=list.map(e=>{ const c=calcCommissionEntry(e); return `<tr><td>${e.date}</td><td>${e.session}</td><td>${esc(c.name)}</td><td>${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${commBalanceHtml(c.balance)}</td><td>${dirComm(c.balance)}</td><td class="no-print"><button class="danger" onclick="delCommEntry('${e.id}')">Del</button></td></tr>`; }).join(''); const s=sumComm(list); return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>Name</th><th>Type</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="11" class="center muted">No entries</td></tr>'}<tr><th colspan="4">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${commBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`; }
+function kadaiEntryTable(date,session='ALL'){ const list=filterKadai(date,session); const rows=list.map(e=>{ const c=calcKadaiEntry(e); return `<tr><td>${e.date}</td><td>${e.session}</td><td>${esc(c.name)}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${kadaiBalanceHtml(c.balance)}</td><td>${dirKadai(c.balance)}</td><td class="no-print"><button class="danger" onclick="delKadaiEntry('${e.id}')">Del</button></td></tr>`; }).join(''); const s=sumKadai(list); return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="10" class="center muted">No entries</td></tr>'}<tr><th colspan="3">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${kadaiBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`; }
+function renderDashboardTable(){ const date=document.getElementById('viewDate').value||today(); const session=document.getElementById('viewSession').value||'ALL'; const totals=masterTotals(date); let html=`<h2 style="margin:0 0 12px">${date} Dashboard</h2><div class="small">တပတ်ရှင်း rows များတွင် Running Balance က Monday မှ ယနေ့အထိ စုပေါင်းထားသော amount ဖြစ်ပါတယ်။</div><div class="space"></div>`; html+=`<div class="grid two"><div><h3>ကော်မရှင် Entries</h3>${commissionEntryTable(date,session)}</div><div><h3>ကာဒိုင် Entries</h3>${kadaiEntryTable(date,session)}</div></div>`; html+=`<div class="space"></div><div class="grid two"><div><h3>ကော်မရှင် စာရင်းရှင်းချုပ်</h3>${settlementCommTable(totals.commRows)}</div><div><h3>ကာဒိုင် စာရင်းချုပ်</h3>${settlementKadaiTable(totals.kadaiRows)}</div></div>`; document.getElementById('dashboardTable').innerHTML=html; }
+function settlementCommTable(rows){ return `<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">Today Balance</th><th class="num">Running Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${r.type==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${commBalanceHtml(r.todayBalance)}</td><td class="num">${commBalanceHtml(r.runningBalance)}</td><td>${dirComm(r.runningBalance)}</td></tr>`).join('')||'<tr><td colspan="5" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
+function settlementKadaiTable(rows){ return `<div class="tablewrap"><table><thead><tr><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${money(r.total)}</td><td class="num">${kadaiBalanceHtml(r.balance)}</td><td>${dirKadai(r.balance)}</td></tr>`).join('')||'<tr><td colspan="4" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
+function renderDailyReport(){ const date=document.getElementById('reportDate').value||today(); const session=document.getElementById('reportSession').value||'ALL'; const totals=masterTotals(date); document.getElementById('dailyReport').innerHTML=`<div class="stats"><div class="stat"><div class="k">ကော်မရှင် ရမည်</div><div class="v">${profitHtml(totals.commReceive)}</div></div><div class="stat"><div class="k">ကော်မရှင် ပေးရ</div><div class="v">${profitHtml(-totals.commPay)}</div></div><div class="stat"><div class="k">ကာဒိုင် ရမည်</div><div class="v">${profitHtml(totals.kadaiReceive)}</div></div><div class="stat"><div class="k">ကာဒိုင် ပေးရ</div><div class="v">${profitHtml(-totals.kadaiPay)}</div></div><div class="stat"><div class="k">Net</div><div class="v">${profitHtml(totals.net)}</div></div></div><div class="grid two"><div><h3>ကော်မရှင် စာရင်းရှင်းချုပ်</h3>${settlementCommTable(totals.commRows)}</div><div><h3>ကာဒိုင် စာရင်းရှင်းချုပ်</h3>${settlementKadaiTable(totals.kadaiRows)}</div></div><div class="space"></div><div class="grid two"><div><h3>ကော်မရှင် Entries</h3>${commissionEntryTable(date,session)}</div><div><h3>ကာဒိုင် Entries</h3>${kadaiEntryTable(date,session)}</div></div>`; }
+function renderWeeklyReport(){ const start=document.getElementById('weekStart').value||mondayOf(today()); const end=dateRange(start,start)[0]?dateRange(start,start):[]; const dates=dateRange(start, new Date(new Date(start+'T00:00:00').getTime()+4*86400000).toISOString().slice(0,10)); let rows=[]; activeCommissions().filter(x=>x.settlement==='weekly').forEach(n=>{ const list=state.commissionEntries.filter(e=>e.nameId===n.id && dates.includes(e.date)); const s=sumComm(list); if(s.total!==0||s.balance!==0) rows.push({name:n.name,total:s.total,balance:s.balance,cor:s.cor,payout:s.payout}); }); document.getElementById('weeklyReport').innerHTML=`<h2 style="margin:0 0 12px">Weekly Report (${dates[0]} to ${dates[dates.length-1]})</h2><div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Payout</th><th class="num">Running Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${money(r.total)}</td><td class="num">${money(r.cor)}</td><td class="num">${money(r.payout)}</td><td class="num">${commBalanceHtml(r.balance)}</td><td>${dirComm(r.balance)}</td></tr>`).join('')||'<tr><td colspan="6" class="center muted">No weekly data</td></tr>'}</tbody></table></div>`; }
+function renderMasterImage(){ const date=document.getElementById('imageDate').value||today(); const wstart=document.getElementById('imageWeekStart').value||mondayOf(date); const totals=masterTotals(date); const weekDates=dateRange(wstart,date); const weeklyRows=buildCommissionSettlementRows(date).filter(r=>r.type==='weekly'); const commSection = totals.commRows.length ? totals.commRows.map(r=>`<div class="share-row"><div>${esc(r.name)} ${r.type==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</div><div class="num mono">${commBalanceHtml(r.todayBalance)}</div><div class="num mono">${commBalanceHtml(r.runningBalance)}</div><div>${r.runningBalance>0?'ဒိုင် ရမည်':r.runningBalance<0?'ဒိုင် ပေးရမည်':'ရှင်းပြီး'}</div><div>${dirComm(r.runningBalance)}</div></div>`).join('') : '<div class="empty">ကော်မရှင် summary မရှိသေးပါ</div>';
+  const kadaiSection = totals.kadaiRows.length ? totals.kadaiRows.map(r=>`<div class="share-row"><div>${esc(r.name)}</div><div class="num mono">${money(r.total)}</div><div class="num mono">${kadaiBalanceHtml(r.balance)}</div><div>${r.balance>0?'ဒိုင် ပေးရမည်':r.balance<0?'ဒိုင် ရမည်':'ရှင်းပြီး'}</div><div>${dirKadai(r.balance)}</div></div>`).join('') : '<div class="empty">ကာဒိုင် summary မရှိသေးပါ</div>';
+  const html=`<div class="image-header"><div><div class="image-title">ဒိုင် Master Summary</div><div class="image-sub mono">Date: ${date} • Weekly Running: ${weekDates[0]} to ${weekDates[weekDates.length-1]}</div></div><div class="image-badge">One Image Settlement Board</div></div>
+  <div class="image-summary"><div class="sum-box"><div class="label">ကော်မရှင်ထံမှ ရမည်</div><div class="big">${profitHtml(totals.commReceive)}</div></div><div class="sum-box"><div class="label">ကော်မရှင်ထံ ပေးရ</div><div class="big">${profitHtml(-totals.commPay)}</div></div><div class="sum-box"><div class="label">ကာဒိုင်ထံမှ ရမည်</div><div class="big">${profitHtml(totals.kadaiReceive)}</div></div><div class="sum-box"><div class="label">ကာဒိုင်ထံ ပေးရ</div><div class="big">${profitHtml(-totals.kadaiPay)}</div></div></div>
+  <div class="image-summary"><div class="sum-box"><div class="label">Net P/L</div><div class="big">${profitHtml(totals.net)}</div></div><div class="sum-box"><div class="label">ကော်မရှင် Rows</div><div class="big">${totals.commRows.length}</div></div><div class="sum-box"><div class="label">ကာဒိုင် Rows</div><div class="big">${totals.kadaiRows.length}</div></div><div class="sum-box"><div class="label">သုံးနည်း</div><div class="big" style="font-size:18px">Screenshot & Share</div></div></div>
+  <div class="section-title">ကော်မရှင် စာရင်းချုပ်</div>
+  <div class="share-list"><div class="share-row head"><div>Name / Type</div><div class="num">Today</div><div class="num">Running</div><div>Meaning</div><div>Status</div></div>${commSection}</div>
+  <div class="space"></div>
+  <div class="section-title">ကာဒိုင် စာရင်းချုပ်</div>
+  <div class="share-list"><div class="share-row head"><div>ကာဒိုင်</div><div class="num">Total</div><div class="num">Balance</div><div>Meaning</div><div>Status</div></div>${kadaiSection}</div>
+  <div class="space"></div>
+  <div class="section-title">မှတ်ချက်</div>
+  <div class="notice" style="margin:0">တပတ်ရှင်း name များ၏ <b>Running</b> balance သည် Monday မှ ယနေ့အထိ တနေ့ပြီးတနေ့ ပေါင်းလာသော balance ဖြစ်ပါတယ်။ ဒါကြောင့် week မပြီးသေးခင်လည်း နေ့စဉ် ကြည့်နိုင်ပါတယ်။</div>
+  <div class="note-footer">Positive / Green = ဒိုင်ဘက် ရမည့်ငွေ။ Red = ဒိုင်ဘက် ပေးရမည့်ငွေ။ ကာဒိုင် section တွင် red ဖြစ်လျှင် ကာဒိုင်ထံ ပေးရမည်ဟု ဆိုလိုသည်။</div>`;
+  document.getElementById('masterImageContent').innerHTML=html;
 }
-function editName(id){
-  const n=state.names.find(x=>x.id===id); if(!n) return;
-  document.getElementById('editNameId').value=n.id;
-  document.getElementById('setName').value=n.name;
-  document.getElementById('setSettlement').value=n.settlement;
-  document.getElementById('setCor').value=n.corPct;
-  document.getElementById('setRate').value=n.pRate;
-  showPage('settings');
-}
-function deleteName(id){
-  if(!confirm('Name ကိုဖျက်မလား? အရင်စာရင်းတွေမှာတော့ Name ID အဖြစ်ကျန်နိုင်ပါတယ်။')) return;
-  state.names=state.names.filter(n=>n.id!==id);
-  saveState(); fillSelects(); renderAll();
-}
-function saveKadaiSetting(){
-  state.kadai.name=document.getElementById('kadaiName').value.trim() || 'ကာဒိုင်';
-  state.kadai.corPct=num(document.getElementById('kadaiCor').value);
-  state.kadai.pRate=num(document.getElementById('kadaiRate').value);
-  saveState(); renderAll(); toast('ကာဒိုင် Setting Save ပြီးပါပြီ');
-}
-
-function renderStats(){
-  const date=document.getElementById('viewDate')?.value || today();
-  const p=profitFor(date,'ALL');
-  document.getElementById('dashStats').innerHTML = [
-    ['ကော်မရှင် Total', money(p.commission.total)],
-    ['ကော်မရှင် Balance', signedMoney(p.commission.balance)],
-    ['ကာသီး Total', money(p.upper.total)],
-    ['ကာဒိုင် Balance', signedMoney(p.upper.balance)],
-    ['ဒိုင် အမြတ်/အရှုံး', signedMoney(p.profit)]
-  ].map(x=>`<div class="stat"><div class="k">${x[0]}</div><div class="v">${x[1]}</div></div>`).join('');
-}
-function renderDashboardTable(){
-  const date=document.getElementById('viewDate').value || today();
-  const session=document.getElementById('viewSession').value || 'ALL';
-  const entries=filterEntries(date,session);
-  const upper=filterUpper(date,session);
-  const p=profitFor(date,session);
-  let html=`<div class="report-title">${date} ${session==='ALL'?'AM + PM':session} Dashboard</div>
-  <div class="report-sub">ကော်မရှင်ဘက် Balance − ကာဒိုင်ဘက် Balance = ဒိုင် အမြတ်/အရှုံး</div>
-  <div class="stats">
-    <div class="stat"><div class="k">ကော်မရှင် Balance</div><div class="v">${signedMoney(p.commission.balance)}</div></div>
-    <div class="stat"><div class="k">ကာဒိုင် Balance</div><div class="v">${signedMoney(p.upper.balance)}</div></div>
-    <div class="stat"><div class="k">ဒိုင် P/L</div><div class="v">${signedMoney(p.profit)}</div></div>
-    <div class="stat"><div class="k">အခြေအနေ</div><div class="v">${directionProfit(p.profit)}</div></div>
-    <div class="stat"><div class="k">Rows</div><div class="v">${entries.length + upper.length}</div></div>
-  </div>`;
-  html += commissionTable(entries, true);
-  html += `<br><h3>ကာဒိုင် / ကာသီး</h3>` + upperTable(upper, true);
-  document.getElementById('dashboardTable').innerHTML=html;
-}
-function commissionTable(entries, actions=false){
-  if(!entries.length) return `<div class="empty">ကော်မရှင်စာရင်း မရှိသေးပါ</div>`;
-  let rows=entries.map(e=>{
-    const c=calcCommission(e);
-    return `<tr>
-      <td>${esc(e.date)}</td><td>${esc(e.session)}</td><td>${esc(c.name)}</td>
-      <td><span class="pill ${c.settlement==='daily'?'ok':'warn'}">${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}</span></td>
-      <td class="num">${money(c.total)}</td><td class="num">${c.corPct}%</td><td class="num">${money(c.cor)}</td>
-      <td class="num">${money(c.pAmount)}</td><td class="num">${c.pRate}</td><td class="num">${money(c.payout)}</td>
-      <td class="num">${signedMoney(c.balance)}</td><td>${directionCommission(c.balance)}</td>
-      ${actions?`<td class="no-print"><button class="ghost" onclick="editEntry('${e.id}')">Edit</button> <button class="danger" onclick="delEntry('${e.id}')">Del</button></td>`:''}
-    </tr>`;
-  }).join('');
-  const s=sumCommission(entries);
-  return `<div class="tablewrap"><table>
-    <thead><tr><th>Date</th><th>AM/PM</th><th>Name</th><th>Type</th><th class="num">Total</th><th class="num">Cor%</th><th class="num">Cor</th><th class="num">P Amt</th><th class="num">P Rate</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th>${actions?'<th class="no-print">Action</th>':''}</tr></thead>
-    <tbody>${rows}
-    <tr><th colspan="4">Total</th><th class="num">${money(s.total)}</th><th></th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th></th><th class="num">${money(s.payout)}</th><th class="num">${signedMoney(s.balance)}</th><th></th>${actions?'<th></th>':''}</tr>
-    </tbody></table></div>`;
-}
-function upperTable(list, actions=false){
-  if(!list.length) return `<div class="empty">ကာဒိုင် / ကာသီး စာရင်း မရှိသေးပါ</div>`;
-  let rows=list.map(e=>{
-    const c=calcUpper(e);
-    return `<tr>
-      <td>${esc(e.date)}</td><td>${esc(e.session)}</td><td>${esc(state.kadai.name)}</td>
-      <td class="num">${money(c.total)}</td><td class="num">${c.corPct}%</td><td class="num">${money(c.cor)}</td>
-      <td class="num">${money(c.pAmount)}</td><td class="num">${c.pRate}</td><td class="num">${money(c.payout)}</td>
-      <td class="num">${signedMoney(c.balance)}</td><td>${directionUpper(c.balance)}</td>
-      ${actions?`<td class="no-print"><button class="danger" onclick="delUpper('${e.id}')">Del</button></td>`:''}
-    </tr>`;
-  }).join('');
-  const s=sumUpper(list);
-  return `<div class="tablewrap"><table>
-    <thead><tr><th>Date</th><th>AM/PM</th><th>ကာဒိုင်</th><th class="num">ကာသီး Total</th><th class="num">Cor%</th><th class="num">Cor ပြန်ရ</th><th class="num">P Amt</th><th class="num">P Rate</th><th class="num">P ပြန်ရ</th><th class="num">Balance</th><th>Direction</th>${actions?'<th class="no-print">Action</th>':''}</tr></thead>
-    <tbody>${rows}
-    <tr><th colspan="3">Total</th><th class="num">${money(s.total)}</th><th></th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th></th><th class="num">${money(s.payout)}</th><th class="num">${signedMoney(s.balance)}</th><th></th>${actions?'<th></th>':''}</tr>
-    </tbody></table></div>`;
-}
-function renderDailyReport(){
-  const date=document.getElementById('reportDate').value || today();
-  const session=document.getElementById('reportSession').value || 'ALL';
-  const entries=filterEntries(date,session);
-  const upper=filterUpper(date,session);
-  const p=profitFor(date,session);
-  const html=`<div class="report-title">${date} ${session==='ALL'?'Daily':session} Report</div>
-  <div class="report-sub">ကော်မရှင် − ကာဒိုင် = ဒိုင်အမြတ်/အရှုံး</div>
-  <div class="stats">
-    <div class="stat"><div class="k">ကော်မရှင် Total</div><div class="v">${money(p.commission.total)}</div></div>
-    <div class="stat"><div class="k">ကော်မရှင် Balance</div><div class="v">${signedMoney(p.commission.balance)}</div></div>
-    <div class="stat"><div class="k">ကာဒိုင် Balance</div><div class="v">${signedMoney(p.upper.balance)}</div></div>
-    <div class="stat"><div class="k">ဒိုင် P/L</div><div class="v">${signedMoney(p.profit)}</div></div>
-    <div class="stat"><div class="k">Status</div><div class="v">${directionProfit(p.profit)}</div></div>
-  </div>
-  <h3>ကော်မရှင် စာရင်း</h3>${commissionTable(entries,false)}
-  <br><h3>ကာဒိုင် စာရင်း</h3>${upperTable(upper,false)}`;
-  document.getElementById('dailyReport').innerHTML=html;
-}
-function renderSettlement(){
-  const date=document.getElementById('reportDate').value || today();
-  const entries=filterEntries(date,'ALL');
-  const daily=entries.filter(e=>calcCommission(e).settlement==='daily');
-  const weekly=entries.filter(e=>calcCommission(e).settlement==='weekly');
-  document.getElementById('dailySettlement').innerHTML=`<div class="small">နေ့တိုင်း ငွေရှင်းမည့် ကော်မရှင်များ</div><br>${commissionTable(daily,false)}`;
-  document.getElementById('weeklyHolding').innerHTML=`<div class="small">တပတ်ပြည့်မှ ငွေရှင်းမည့် ကော်မရှင်များ — Daily ထဲမှာ record ဝင်ထားပြီး Weekly List မှာ စုပေါင်းပြမယ်။</div><br>${commissionTable(weekly,false)}`;
-}
-function weekDates(start){
-  const d=new Date(start+'T00:00:00');
-  const arr=[];
-  for(let i=0;i<5;i++){ const x=new Date(d); x.setDate(d.getDate()+i); arr.push(x.toISOString().slice(0,10)); }
-  return arr;
-}
-function setThisWeek(doRender=true){
-  const el=document.getElementById('weekStart'); if(!el) return;
-  const d=new Date();
-  const day=d.getDay(); // Sun 0
-  const diff=(day===0?-6:1-day);
-  d.setDate(d.getDate()+diff);
-  el.value=d.toISOString().slice(0,10);
-  if(doRender) renderAll();
-}
-function renderWeekly(){
-  const start=document.getElementById('weekStart').value || today();
-  const dates=weekDates(start);
-  const nameFilter=document.getElementById('weekName').value || 'ALL';
-  let list=state.entries.filter(e=>dates.includes(e.date));
-  if(nameFilter!=='ALL') list=list.filter(e=>e.nameId===nameFilter);
-  // Weekly page focuses on weekly settlement names but keeps all if a specific daily name selected.
-  if(nameFilter==='ALL') list=list.filter(e=>calcCommission(e).settlement==='weekly');
-  const byName={};
-  list.forEach(e=>{
-    const c=calcCommission(e);
-    const key=e.nameId;
-    if(!byName[key]) byName[key]={name:c.name,total:0,cor:0,pAmount:0,payout:0,balance:0,rows:0};
-    byName[key].total+=c.total; byName[key].cor+=c.cor; byName[key].pAmount+=c.pAmount; byName[key].payout+=c.payout; byName[key].balance+=c.balance; byName[key].rows++;
-  });
-  const rows=Object.values(byName).map(x=>`<tr><td>${esc(x.name)}</td><td class="num">${money(x.total)}</td><td class="num">${money(x.cor)}</td><td class="num">${money(x.pAmount)}</td><td class="num">${money(x.payout)}</td><td class="num">${signedMoney(x.balance)}</td><td>${directionCommission(x.balance)}</td><td class="num">${x.rows}</td></tr>`).join('');
-  const sum=Object.values(byName).reduce((a,x)=>{a.total+=x.total;a.cor+=x.cor;a.pAmount+=x.pAmount;a.payout+=x.payout;a.balance+=x.balance;a.rows+=x.rows;return a;},{total:0,cor:0,pAmount:0,payout:0,balance:0,rows:0});
-  let detail='';
-  dates.forEach(d=>{
-    const dayList=list.filter(e=>e.date===d);
-    if(dayList.length) detail += `<h3>${d}</h3>${commissionTable(dayList,false)}<br>`;
-  });
-  document.getElementById('weeklyReport').innerHTML=`<div class="report-title">Weekly List (${dates[0]} to ${dates[4]})</div>
-  <div class="report-sub">တပတ်ရှင်း Name များကို Mon–Fri စုပေါင်းထားသည်</div>
-  <div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amt</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="num">Rows</th></tr></thead>
-  <tbody>${rows || '<tr><td colspan="8" class="center muted">Weekly စာရင်း မရှိသေးပါ</td></tr>'}
-  <tr><th>Total</th><th class="num">${money(sum.total)}</th><th class="num">${money(sum.cor)}</th><th class="num">${money(sum.pAmount)}</th><th class="num">${money(sum.payout)}</th><th class="num">${signedMoney(sum.balance)}</th><th></th><th class="num">${sum.rows}</th></tr>
-  </tbody></table></div><br>${detail}`;
-}
-function renderNamesTable(){
-  document.getElementById('kadaiName').value=state.kadai.name||'ကာဒိုင်';
-  document.getElementById('kadaiCor').value=state.kadai.corPct??10;
-  document.getElementById('kadaiRate').value=state.kadai.pRate??80;
-  if(!state.names.length){ document.getElementById('namesTable').innerHTML='<div class="empty">Name မရှိသေးပါ</div>'; return; }
-  const rows=state.names.map(n=>`<tr><td>${esc(n.name)}</td><td>${n.settlement==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td class="no-print"><button class="ghost" onclick="editName('${n.id}')">Edit</button> <button class="danger" onclick="deleteName('${n.id}')">Del</button></td></tr>`).join('');
-  document.getElementById('namesTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">Cor%</th><th class="num">P Rate</th><th class="no-print">Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-}
-function syncReportDate(){
-  const d=document.getElementById('reportDate').value;
-  if(d) document.getElementById('viewDate').value=d;
-}
-function renderHints(){
-  const nameId=document.getElementById('entryName').value;
-  const n=nameById(nameId);
-  document.getElementById('entryHint').innerHTML = nameId ? `Selected: ${esc(n.name)} | Cor ${money(n.corPct)}% | P Rate ${money(n.pRate)} | ${n.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}` : '';
-  document.getElementById('upperHint').innerHTML = `ကာဒိုင်: ${esc(state.kadai.name)} | Cor ပြန်ရ ${money(state.kadai.corPct)}% | P Rate ပြန်ရ ${money(state.kadai.pRate)}`;
-}
-function renderAll(){
-  fillSelects();
-  renderHints();
-  renderStats();
-  renderDashboardTable();
-  renderDailyReport();
-  renderSettlement();
-  renderWeekly();
-  renderNamesTable();
-}
-function copyTodayText(){
-  const date=document.getElementById('reportDate').value || document.getElementById('viewDate').value || today();
-  const session=document.getElementById('reportSession')?.value || document.getElementById('viewSession')?.value || 'ALL';
-  const p=profitFor(date,session);
-  const lines=[];
-  lines.push(`ဒိုင် စာရင်း ${date} ${session==='ALL'?'AM+PM':session}`);
-  lines.push(`ကော်မရှင် Total: ${money(p.commission.total)}`);
-  lines.push(`ကော်မရှင် Cor: ${money(p.commission.cor)}`);
-  lines.push(`ကော်မရှင် P လျော်ကြေး: ${money(p.commission.payout)}`);
-  lines.push(`ကော်မရှင် Balance: ${money(p.commission.balance)}`);
-  lines.push(`ကာသီး Total: ${money(p.upper.total)}`);
-  lines.push(`ကာဒိုင် Cor ပြန်ရ: ${money(p.upper.cor)}`);
-  lines.push(`ကာဒိုင် P ပြန်ရ: ${money(p.upper.payout)}`);
-  lines.push(`ကာဒိုင် Balance: ${money(p.upper.balance)}`);
-  lines.push(`ဒိုင် အမြတ်/အရှုံး: ${money(p.profit)}`);
-  navigator.clipboard?.writeText(lines.join('\n')).then(()=>toast('Copy ပြီးပါပြီ')).catch(()=>alert(lines.join('\n')));
-}
-function printPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('print-target'));
-  document.getElementById(id).classList.add('print-target');
-  window.print();
-}
-function clearToday(){
-  const d=document.getElementById('viewDate').value || today();
-  if(!confirm(`${d} ရက်နေ့စာရင်းအားလုံး ဖျက်မလား?`)) return;
-  state.entries=state.entries.filter(e=>e.date!==d);
-  state.upperEntries=state.upperEntries.filter(e=>e.date!==d);
-  saveState(); renderAll(); toast('ယနေ့စာရင်း ဖျက်ပြီးပါပြီ');
-}
-function resetAll(){
-  if(!confirm('App data အားလုံး Reset လုပ်မလား?')) return;
-  localStorage.removeItem(KEY);
-  state=defaultState(); saveState(); init(); toast('Reset ပြီးပါပြီ');
-}
-function exportBackup(){
-  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download='dealer-cps-kadai-backup-'+today()+'.json'; a.click();
-  URL.revokeObjectURL(a.href);
-}
-function importBackup(ev){
-  const file=ev.target.files[0]; if(!file) return;
-  const r=new FileReader();
-  r.onload=()=>{
-    try{
-      const obj=JSON.parse(r.result);
-      if(!obj.names || !Array.isArray(obj.names)) throw new Error('bad');
-      state=obj; saveState(); init(); toast('Restore ပြီးပါပြီ');
-    }catch(e){ alert('Backup file မမှန်ပါ'); }
-  };
-  r.readAsText(file);
-}
-function init(){
-  setDates();
-  fillSelects();
-  document.getElementById('entryName').addEventListener('change', renderHints);
-  document.getElementById('entryDate').addEventListener('change', ()=>{document.getElementById('viewDate').value=document.getElementById('entryDate').value;document.getElementById('reportDate').value=document.getElementById('entryDate').value;renderAll();});
-  document.getElementById('upperDate').addEventListener('change', ()=>{document.getElementById('viewDate').value=document.getElementById('upperDate').value;document.getElementById('reportDate').value=document.getElementById('upperDate').value;renderAll();});
-  ['entrySession','upperSession'].forEach(id=>document.getElementById(id).addEventListener('change', renderHints));
-  renderAll();
-}
+function copyTodayText(){ const date=document.getElementById('viewDate').value||today(); const t=masterTotals(date); const lines=[`ဒိုင် Master Summary ${date}`,`ကော်မရှင်ထံမှ ရမည်: ${money(t.commReceive)}`,`ကော်မရှင်ထံ ပေးရ: ${money(t.commPay)}`,`ကာဒိုင်ထံမှ ရမည်: ${money(t.kadaiReceive)}`,`ကာဒိုင်ထံ ပေးရ: ${money(t.kadaiPay)}`,`Net P/L: ${money(t.net)}`]; navigator.clipboard?.writeText(lines.join('\n')).then(()=>toast('Copy ပြီးပါပြီ')).catch(()=>alert(lines.join('\n'))); }
+function printPage(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('print-target')); document.getElementById(id).classList.add('print-target'); window.print(); }
+function printImageCard(id){ const el=document.getElementById(id); const holder=document.createElement('div'); holder.className='page print-target'; holder.appendChild(el.cloneNode(true)); document.body.appendChild(holder); window.print(); holder.remove(); }
+function clearToday(){ const d=document.getElementById('viewDate').value||today(); if(!confirm(`${d} ရက်နေ့စာရင်းအားလုံး ဖျက်မလား?`)) return; state.commissionEntries=state.commissionEntries.filter(e=>e.date!==d); state.kadaiEntries=state.kadaiEntries.filter(e=>e.date!==d); saveState(); renderAll(); toast('ယနေ့စာရင်း ဖျက်ပြီးပါပြီ'); }
+function resetAll(){ if(!confirm('App data အားလုံး Reset လုပ်မလား?')) return; localStorage.removeItem(KEY); state=defaultState(); saveState(); init(); toast('Reset ပြီးပါပြီ'); }
+function exportBackup(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dealer-cps-multi-kadai-v4-'+today()+'.json'; a.click(); URL.revokeObjectURL(a.href); }
+function importBackup(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=()=>{ try{ const obj=JSON.parse(r.result); if(!obj.commissions||!obj.kadais) throw new Error('bad'); state=obj; saveState(); init(); toast('Restore ပြီးပါပြီ'); }catch(e){ alert('Backup file မမှန်ပါ'); } }; r.readAsText(file); }
+function renderAll(){ fillSelects(); renderHints(); renderCommTable(); renderKadaiTable(); renderStats(); renderDashboardTable(); renderDailyReport(); renderWeeklyReport(); renderMasterImage(); }
+function init(){ setDates(); fillSelects(); renderAll(); }
 init();
 </script>
 </body>
