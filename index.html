@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="my">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealer CPS + Kadai Ledger v2</title>
+  <style>
+    :root{
+      --bg:#eef4fb; --card:#fff; --ink:#0f172a; --muted:#64748b; --line:#d8e2ef;
+      --brand:#2563eb; --brand2:#1e40af; --ok:#16a34a; --danger:#dc2626; --warn:#f59e0b;
+      --soft:#f8fafc; --shadow:0 14px 35px rgba(15,23,42,.08); --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:linear-gradient(135deg,#eaf2fb,#f8fafc);color:var(--ink);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Myanmar",Arial,sans-serif;
+    }
+    .app{max-width:1280px;margin:auto;padding:16px}
+    .topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}
+    .title{font-size:24px;font-weight:950}
+    .subtitle{font-size:13px;color:var(--muted);font-weight:700;margin-top:3px;line-height:1.5}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#eaf2fb,#f8fafc);padding:10px 0}
+    .tab{border:1px solid var(--line);background:white;color:var(--ink);padding:10px 13px;border-radius:999px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(15,23,42,.04)}
+    .tab.active{background:var(--brand);border-color:var(--brand);color:white}
+    .page{display:none}.page.active{display:block}
+    .grid{display:grid;gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
+    .card h2,.card h3{margin:0 0 12px}.card h2{font-size:20px}.card h3{font-size:17px}
+    label{display:block;margin:0 0 6px;color:var(--muted);font-size:12px;font-weight:900}
+    input,select,textarea{
+      width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);
+      padding:10px 11px;font-size:15px;outline:none
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
+    .row.two{grid-template-columns:repeat(2,minmax(0,1fr))}.row.three{grid-template-columns:repeat(3,minmax(0,1fr))}.row.five{grid-template-columns:repeat(5,minmax(0,1fr))}
+    .btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    button{border:0;background:var(--brand);color:white;border-radius:12px;padding:10px 13px;font-weight:950;cursor:pointer;box-shadow:0 8px 18px rgba(37,99,235,.16)}
+    button:hover{background:var(--brand2)}button.ok{background:var(--ok)}button.ok:hover{background:#15803d}
+    button.danger{background:var(--danger)}button.danger:hover{background:#b91c1c}
+    button.dark{background:#0f172a}button.dark:hover{background:#334155}
+    button.ghost{background:white;color:var(--ink);border:1px solid var(--line);box-shadow:none}button.ghost:hover{background:var(--soft)}
+    .notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:16px;padding:11px 13px;font-weight:800;font-size:13px;line-height:1.65;margin-bottom:12px}
+    .warnbox{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:16px;padding:11px 13px;font-weight:850;font-size:13px;line-height:1.65;margin-bottom:12px}
+    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+    .stat{background:white;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:0 6px 18px rgba(15,23,42,.05)}
+    .stat .k{font-size:12px;color:var(--muted);font-weight:900}.stat .v{font-size:20px;font-weight:950;margin-top:3px}
+    .tablewrap{overflow:auto;border-radius:16px;border:1px solid var(--line);background:white}
+    table{width:100%;border-collapse:collapse;background:white}
+    th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;font-size:14px;vertical-align:middle;white-space:nowrap}
+    th{background:#f1f5f9;color:#334155;font-size:12px;text-transform:uppercase;letter-spacing:.25px}
+    tr:last-child td{border-bottom:0}.num{text-align:right;font-variant-numeric:tabular-nums}.center{text-align:center}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:950;background:#e0f2fe;color:#075985}
+    .pill.ok{background:#dcfce7;color:#166534}.pill.bad{background:#fee2e2;color:#991b1b}.pill.warn{background:#fef3c7;color:#92400e}.pill.dark{background:#e2e8f0;color:#0f172a}
+    .muted{color:var(--muted)}.small{font-size:12px;color:var(--muted);line-height:1.45}.right{text-align:right}.hidden{display:none!important}
+    .positive{color:#166534;font-weight:950}.negative{color:#b91c1c;font-weight:950}.zero{color:#475569;font-weight:950}
+    .empty{padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:16px;background:var(--soft)}
+    .report-title{text-align:center;font-size:22px;font-weight:950;margin:0 0 6px}.report-sub{text-align:center;font-size:13px;color:#475569;font-weight:800;margin-bottom:12px}
+    .toast{position:fixed;right:18px;bottom:18px;background:#0f172a;color:white;padding:12px 14px;border-radius:14px;box-shadow:var(--shadow);display:none;z-index:99;font-weight:900}
+    @media(max-width:960px){.grid.two,.grid.three,.row,.row.two,.row.three,.row.five,.stats{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start}.tabs{flex-wrap:nowrap;overflow:auto}.tab{white-space:nowrap}.app{padding:12px}th,td{font-size:12px;padding:7px 5px}}
+    @media print{.tabs,.topbar .btns,.no-print,button,input,select,textarea,.toast{display:none!important}body{background:white}.app{max-width:none;padding:0}.card{box-shadow:none;border:0}.page{display:none!important}.page.print-target{display:block!important}.tablewrap{overflow:visible;border:0}th,td{white-space:normal}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="title">ဒိုင် စာရင်းရှင်း App v2</div>
+      <div class="subtitle">ကော်မရှင် → ဒိုင် → ကာဒိုင် အတွက် Total / Cor% / P Amount / P Rate / ကာသီးကြေး တစ်ခါထည့်တာနဲ့ အရှုံးအမြတ် Auto တွက်ပေးမယ်။</div>
+    </div>
+    <div class="btns no-print">
+      <button class="ghost" onclick="exportBackup()">Backup JSON</button>
+      <button class="ghost" onclick="document.getElementById('importFile').click()">Restore</button>
+      <input id="importFile" class="hidden" type="file" accept="application/json" onchange="importBackup(event)">
+    </div>
+  </div>
+
+  <div class="tabs no-print">
+    <button class="tab active" data-page="dashboard" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="tab" data-page="daily" onclick="showPage('daily')">AM / PM / Daily</button>
+    <button class="tab" data-page="settlement" onclick="showPage('settlement')">နေ့ရှင်း / တပတ်ရှင်း</button>
+    <button class="tab" data-page="weekly" onclick="showPage('weekly')">Weekly List</button>
+    <button class="tab" data-page="settings" onclick="showPage('settings')">Settings</button>
+  </div>
+
+  <section id="dashboard" class="page active">
+    <div class="stats" id="dashStats"></div>
+
+    <div class="grid two">
+      <div class="card">
+        <h2>ကော်မရှင် စာရင်းသွင်းရန်</h2>
+        <div class="notice">
+          ကော်မရှင် Name ရွေးပြီး Total / P Amount ထည့်ပါ။ Setting ထဲက နာမည်အလိုက် Cor% နဲ့ P Rate ကို သုံးပြီး
+          <b>Balance = Total − Cor − P လျော်ကြေး</b> အဖြစ် Auto တွက်ပါမယ်။
+        </div>
+        <div class="row three">
+          <div><label>Date</label><input id="entryDate" type="date"></div>
+          <div><label>Session</label><select id="entrySession"><option>AM</option><option>PM</option></select></div>
+          <div><label>ကော်မရှင် Name</label><select id="entryName"></select></div>
+        </div><br>
+        <div class="row three">
+          <div><label>Total / ထိုးကြေး</label><input id="entryTotal" inputmode="decimal" placeholder="100000"></div>
+          <div><label>P Amount / ပေါက်အမောင့်</label><input id="entryPAmount" inputmode="decimal" placeholder="500"></div>
+          <div><button class="ok" style="width:100%" onclick="saveCommissionEntry()">Save / Update</button></div>
+        </div>
+        <p class="small" id="entryHint"></p>
+      </div>
+
+      <div class="card">
+        <h2>ကာဒိုင် / ကာသီး စာရင်း</h2>
+        <div class="warnbox">
+          ဒိုင်က ကာဒိုင်ထံ ပို့တဲ့ <b>ကာသီး Total</b> နဲ့ <b>ကာဒိုင်ဘက် P Amount</b> ကို ထည့်ပါ။
+          ကာဒိုင်ထံက ပြန်ရတဲ့ Cor နဲ့ P လျော်ကြေးကို Setting ထဲက ကာဒိုင် Cor% / P Rate နဲ့ တွက်ပါမယ်။
+        </div>
+        <div class="row three">
+          <div><label>Date</label><input id="upperDate" type="date"></div>
+          <div><label>Session</label><select id="upperSession"><option>AM</option><option>PM</option></select></div>
+          <div><button class="ghost" style="width:100%" onclick="fillUpperFromCommission()">ကော်မရှင် Total ဖြင့် Auto Fill</button></div>
+        </div><br>
+        <div class="row three">
+          <div><label>ကာသီး Total</label><input id="upperTotal" inputmode="decimal" placeholder="100000"></div>
+          <div><label>ကာဒိုင် P Amount</label><input id="upperPAmount" inputmode="decimal" placeholder="500"></div>
+          <div><button class="ok" style="width:100%" onclick="saveUpperEntry()">Save ကာဒိုင်</button></div>
+        </div>
+        <p class="small" id="upperHint"></p>
+      </div>
+    </div>
+
+    <br>
+    <div class="card">
+      <div class="row three no-print">
+        <div><label>ကြည့်မည့် Date</label><input id="viewDate" type="date" onchange="renderAll()"></div>
+        <div><label>Session Filter</label><select id="viewSession" onchange="renderAll()"><option value="ALL">AM + PM</option><option>AM</option><option>PM</option></select></div>
+        <div class="btns"><button class="ghost" onclick="copyTodayText()">Copy Viber Text</button><button class="ghost" onclick="printPage('daily')">Print Report</button></div>
+      </div>
+      <br class="no-print">
+      <h2>ယနေ့ Dashboard စာရင်း</h2>
+      <div id="dashboardTable"></div>
+    </div>
+  </section>
+
+  <section id="daily" class="page">
+    <div class="card">
+      <div class="row three no-print">
+        <div><label>Report Date</label><input id="reportDate" type="date" onchange="syncReportDate();renderAll()"></div>
+        <div><label>Session</label><select id="reportSession" onchange="renderAll()"><option value="ALL">AM + PM</option><option>AM</option><option>PM</option></select></div>
+        <div class="btns"><button class="ghost" onclick="copyTodayText()">Copy</button><button class="ghost" onclick="printPage('daily')">Print</button></div>
+      </div>
+      <br class="no-print">
+      <div id="dailyReport"></div>
+    </div>
+  </section>
+
+  <section id="settlement" class="page">
+    <div class="grid two">
+      <div class="card">
+        <h2>နေ့ရှင်း စာရင်း</h2>
+        <div id="dailySettlement"></div>
+      </div>
+      <div class="card">
+        <h2>တပတ်ရှင်း စာရင်း</h2>
+        <div id="weeklyHolding"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="weekly" class="page">
+    <div class="card">
+      <div class="row three no-print">
+        <div><label>Week Start / Monday</label><input id="weekStart" type="date" onchange="renderAll()"></div>
+        <div><label>Name Filter</label><select id="weekName" onchange="renderAll()"></select></div>
+        <div class="btns"><button class="ghost" onclick="setThisWeek()">This Week</button><button class="ghost" onclick="printPage('weekly')">Print Weekly</button></div>
+      </div>
+      <br class="no-print">
+      <div id="weeklyReport"></div>
+    </div>
+  </section>
+
+  <section id="settings" class="page">
+    <div class="grid two">
+      <div class="card">
+        <h2>ကော်မရှင် Name Settings</h2>
+        <div class="notice">Name တစ်ခုချင်းစီကို Cor% / P Rate / နေ့ရှင်း-တပတ်ရှင်း သတ်မှတ်ထားပါ။ နောက်နေ့တွေမှာ ထပ်လုပ်စရာမလိုပါ။ ပြောင်းချင်တဲ့အခါမှ Settings မှာပြင်ပါ။</div>
+        <input id="editNameId" type="hidden">
+        <div class="row two">
+          <div><label>Name</label><input id="setName" placeholder="ဥပမာ မောင်အောင်"></div>
+          <div><label>Settlement Type</label><select id="setSettlement"><option value="daily">နေ့ရှင်း</option><option value="weekly">တပတ်ရှင်း</option></select></div>
+        </div><br>
+        <div class="row three">
+          <div><label>Cor % ပေးရန်</label><input id="setCor" inputmode="decimal" placeholder="10"></div>
+          <div><label>P လျော်ကြေး Rate</label><input id="setRate" inputmode="decimal" placeholder="80"></div>
+          <div><button class="ok" style="width:100%" onclick="saveNameSetting()">Save Name</button></div>
+        </div>
+        <br>
+        <div id="namesTable"></div>
+      </div>
+
+      <div class="card">
+        <h2>ကာဒိုင် Settings</h2>
+        <div class="warnbox">
+          ဒိုင်က ကာဒိုင်ထံ ကာသီးပို့တဲ့အခါ ကာဒိုင်ထံမှ ပြန်ရမည့် Cor% နဲ့ P Rate ကို ဒီမှာသတ်မှတ်ပါ။
+        </div>
+        <div class="row three">
+          <div><label>ကာဒိုင် Name</label><input id="kadaiName" placeholder="ကာဒိုင်"></div>
+          <div><label>ကာဒိုင် Cor% ပြန်ရ</label><input id="kadaiCor" inputmode="decimal" placeholder="10"></div>
+          <div><label>ကာဒိုင် P Rate ပြန်ရ</label><input id="kadaiRate" inputmode="decimal" placeholder="80"></div>
+        </div><br>
+        <button class="ok" onclick="saveKadaiSetting()">Save ကာဒိုင် Setting</button>
+        <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+        <h3>Formula အဓိပ္ပါယ်</h3>
+        <div class="notice">
+          <b>ကော်မရှင်ဘက် Balance</b> = Total − ကော်မရှင်ကြေး − P လျော်ကြေး<br>
+          Positive ဖြစ်ရင် ကော်မရှင်ထံမှ ဒိုင် <b>ရမည်</b>။ Negative ဖြစ်ရင် ဒိုင်က ကော်မရှင်ထံ <b>ပေးရမည်</b>။<br><br>
+          <b>ကာဒိုင်ဘက် Balance</b> = ကာသီး Total − ကာဒိုင် Cor − ကာဒိုင် P လျော်ကြေး<br>
+          Positive ဖြစ်ရင် ဒိုင်က ကာဒိုင်ထံ <b>ပေးရမည်</b>။ Negative ဖြစ်ရင် ကာဒိုင်ထံမှ ဒိုင် <b>ရမည်</b>။<br><br>
+          <b>ဒိုင် အမြတ်/အရှုံး</b> = ကော်မရှင်ဘက် Balance − ကာဒိုင်ဘက် Balance
+        </div>
+        <div class="btns">
+          <button class="danger" onclick="clearToday()">ယနေ့စာရင်းဖျက်ရန်</button>
+          <button class="danger" onclick="resetAll()">App အားလုံး Reset</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='dealer_cps_kadai_v2';
+let state = loadState();
+
+function defaultState(){
+  return {
+    names:[
+      {id:uid(), name:'နမူနာနေ့ရှင်း', settlement:'daily', corPct:10, pRate:80, active:true},
+      {id:uid(), name:'နမူနာတပတ်ရှင်း', settlement:'weekly', corPct:10, pRate:80, active:true}
+    ],
+    kadai:{name:'ကာဒိုင်', corPct:10, pRate:80},
+    entries:[],
+    upperEntries:[]
+  };
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(!raw) return defaultState();
+    const obj=JSON.parse(raw);
+    obj.names=obj.names||[];
+    obj.entries=obj.entries||[];
+    obj.upperEntries=obj.upperEntries||[];
+    obj.kadai=obj.kadai||{name:'ကာဒိုင်',corPct:10,pRate:80};
+    return obj;
+  }catch(e){ return defaultState(); }
+}
+function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+function uid(){ return 'id_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function num(v){ if(v===undefined||v===null||v==='') return 0; return Number(String(v).replace(/,/g,''))||0; }
+function money(v){
+  const n=Number(v)||0;
+  return n.toLocaleString('en-US',{maximumFractionDigits:2});
+}
+function signedMoney(v){
+  const cls=v>0?'positive':v<0?'negative':'zero';
+  const sign=v>0?'+':'';
+  return `<span class="${cls}">${sign}${money(v)}</span>`;
+}
+function directionCommission(v){
+  if(v>0) return '<span class="pill ok">ကော်မရှင်ထံမှ ရမည်</span>';
+  if(v<0) return '<span class="pill bad">ကော်မရှင်ထံ ပေးရမည်</span>';
+  return '<span class="pill dark">ရှင်းပြီး</span>';
+}
+function directionUpper(v){
+  if(v>0) return '<span class="pill bad">ကာဒိုင်ထံ ပေးရမည်</span>';
+  if(v<0) return '<span class="pill ok">ကာဒိုင်ထံမှ ရမည်</span>';
+  return '<span class="pill dark">ရှင်းပြီး</span>';
+}
+function directionProfit(v){
+  if(v>0) return '<span class="pill ok">ဒိုင် မြတ်</span>';
+  if(v<0) return '<span class="pill bad">ဒိုင် ရှုံး</span>';
+  return '<span class="pill dark">မမြတ်/မရှုံး</span>';
+}
+function toast(msg){
+  const el=document.getElementById('toast'); el.textContent=msg; el.style.display='block';
+  setTimeout(()=>el.style.display='none',1800);
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page===id));
+  renderAll();
+}
+function setDates(){
+  const t=today();
+  ['entryDate','upperDate','viewDate','reportDate'].forEach(id=>{ const el=document.getElementById(id); if(el && !el.value) el.value=t; });
+  setThisWeek(false);
+}
+function activeNames(){ return state.names.filter(n=>n.active!==false); }
+function nameById(id){ return state.names.find(n=>n.id===id) || {name:'-',corPct:0,pRate:0,settlement:'daily'}; }
+
+function fillSelects(){
+  const opts = activeNames().map(n=>`<option value="${n.id}">${esc(n.name)} (${n.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'})</option>`).join('');
+  ['entryName'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=opts || '<option value="">Name မရှိသေးပါ</option>'; });
+  const week = document.getElementById('weekName');
+  if(week){
+    const cur=week.value;
+    week.innerHTML='<option value="ALL">All Names</option>'+activeNames().map(n=>`<option value="${n.id}">${esc(n.name)}</option>`).join('');
+    if([...week.options].some(o=>o.value===cur)) week.value=cur;
+  }
+}
+function esc(s){ return String(s??'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+function calcCommission(e){
+  const n=nameById(e.nameId);
+  const total=num(e.total), pAmount=num(e.pAmount);
+  const cor=total*num(n.corPct)/100;
+  const payout=pAmount*num(n.pRate);
+  const balance=total-cor-payout;
+  return {total,pAmount,cor,payout,balance,corPct:num(n.corPct),pRate:num(n.pRate),name:n.name,settlement:n.settlement};
+}
+function calcUpper(u){
+  const total=num(u.kaTotal), pAmount=num(u.kaPAmount);
+  const cor=total*num(state.kadai.corPct)/100;
+  const payout=pAmount*num(state.kadai.pRate);
+  const balance=total-cor-payout;
+  return {total,pAmount,cor,payout,balance,corPct:num(state.kadai.corPct),pRate:num(state.kadai.pRate)};
+}
+function filterEntries(date, session='ALL'){
+  return state.entries.filter(e=>e.date===date && (session==='ALL'||e.session===session));
+}
+function filterUpper(date, session='ALL'){
+  return state.upperEntries.filter(e=>e.date===date && (session==='ALL'||e.session===session));
+}
+function sumCommission(list){
+  return list.reduce((a,e)=>{ const c=calcCommission(e); a.total+=c.total; a.pAmount+=c.pAmount; a.cor+=c.cor; a.payout+=c.payout; a.balance+=c.balance; return a; }, {total:0,pAmount:0,cor:0,payout:0,balance:0});
+}
+function sumUpper(list){
+  return list.reduce((a,e)=>{ const c=calcUpper(e); a.total+=c.total; a.pAmount+=c.pAmount; a.cor+=c.cor; a.payout+=c.payout; a.balance+=c.balance; return a; }, {total:0,pAmount:0,cor:0,payout:0,balance:0});
+}
+function profitFor(date, session='ALL'){
+  const c=sumCommission(filterEntries(date,session));
+  const u=sumUpper(filterUpper(date,session));
+  return {commission:c, upper:u, profit:c.balance-u.balance};
+}
+
+function saveCommissionEntry(){
+  const date=document.getElementById('entryDate').value || today();
+  const session=document.getElementById('entrySession').value;
+  const nameId=document.getElementById('entryName').value;
+  if(!nameId){ toast('Settings မှာ Name ထည့်ပါ'); return; }
+  const total=num(document.getElementById('entryTotal').value);
+  const pAmount=num(document.getElementById('entryPAmount').value);
+  const old=state.entries.find(e=>e.date===date && e.session===session && e.nameId===nameId);
+  if(old){ old.total=total; old.pAmount=pAmount; old.updatedAt=Date.now(); }
+  else state.entries.push({id:uid(), date, session, nameId, total, pAmount, createdAt:Date.now()});
+  saveState();
+  document.getElementById('entryTotal').value='';
+  document.getElementById('entryPAmount').value='';
+  toast('ကော်မရှင်စာရင်း Save ပြီးပါပြီ');
+  renderAll();
+}
+function saveUpperEntry(){
+  const date=document.getElementById('upperDate').value || today();
+  const session=document.getElementById('upperSession').value;
+  const kaTotal=num(document.getElementById('upperTotal').value);
+  const kaPAmount=num(document.getElementById('upperPAmount').value);
+  const old=state.upperEntries.find(e=>e.date===date && e.session===session);
+  if(old){ old.kaTotal=kaTotal; old.kaPAmount=kaPAmount; old.updatedAt=Date.now(); }
+  else state.upperEntries.push({id:uid(), date, session, kaTotal, kaPAmount, createdAt:Date.now()});
+  saveState();
+  toast('ကာဒိုင်စာရင်း Save ပြီးပါပြီ');
+  renderAll();
+}
+function fillUpperFromCommission(){
+  const date=document.getElementById('upperDate').value || today();
+  const session=document.getElementById('upperSession').value;
+  const s=sumCommission(filterEntries(date,session));
+  document.getElementById('upperTotal').value = s.total || '';
+  document.getElementById('upperPAmount').value = s.pAmount || '';
+  toast('ကော်မရှင် Total/P Amount ဖြင့် ဖြည့်ပြီးပါပြီ');
+}
+function editEntry(id){
+  const e=state.entries.find(x=>x.id===id); if(!e) return;
+  document.getElementById('entryDate').value=e.date;
+  document.getElementById('entrySession').value=e.session;
+  document.getElementById('entryName').value=e.nameId;
+  document.getElementById('entryTotal').value=e.total;
+  document.getElementById('entryPAmount').value=e.pAmount;
+  showPage('dashboard');
+  toast('Edit ပြင်ပြီး Save/Update နှိပ်ပါ');
+}
+function delEntry(id){
+  if(!confirm('ဒီစာရင်းကို ဖျက်မလား?')) return;
+  state.entries=state.entries.filter(e=>e.id!==id);
+  saveState(); renderAll();
+}
+function delUpper(id){
+  if(!confirm('ကာဒိုင်စာရင်းကို ဖျက်မလား?')) return;
+  state.upperEntries=state.upperEntries.filter(e=>e.id!==id);
+  saveState(); renderAll();
+}
+
+function saveNameSetting(){
+  const id=document.getElementById('editNameId').value;
+  const name=document.getElementById('setName').value.trim();
+  if(!name){ toast('Name ထည့်ပါ'); return; }
+  const obj={name, settlement:document.getElementById('setSettlement').value, corPct:num(document.getElementById('setCor').value), pRate:num(document.getElementById('setRate').value), active:true};
+  if(id){
+    const n=state.names.find(x=>x.id===id);
+    if(n) Object.assign(n,obj);
+  }else{
+    state.names.push({id:uid(),...obj});
+  }
+  saveState();
+  document.getElementById('editNameId').value='';
+  document.getElementById('setName').value='';
+  document.getElementById('setCor').value='';
+  document.getElementById('setRate').value='';
+  fillSelects(); renderAll(); toast('Name Setting Save ပြီးပါပြီ');
+}
+function editName(id){
+  const n=state.names.find(x=>x.id===id); if(!n) return;
+  document.getElementById('editNameId').value=n.id;
+  document.getElementById('setName').value=n.name;
+  document.getElementById('setSettlement').value=n.settlement;
+  document.getElementById('setCor').value=n.corPct;
+  document.getElementById('setRate').value=n.pRate;
+  showPage('settings');
+}
+function deleteName(id){
+  if(!confirm('Name ကိုဖျက်မလား? အရင်စာရင်းတွေမှာတော့ Name ID အဖြစ်ကျန်နိုင်ပါတယ်။')) return;
+  state.names=state.names.filter(n=>n.id!==id);
+  saveState(); fillSelects(); renderAll();
+}
+function saveKadaiSetting(){
+  state.kadai.name=document.getElementById('kadaiName').value.trim() || 'ကာဒိုင်';
+  state.kadai.corPct=num(document.getElementById('kadaiCor').value);
+  state.kadai.pRate=num(document.getElementById('kadaiRate').value);
+  saveState(); renderAll(); toast('ကာဒိုင် Setting Save ပြီးပါပြီ');
+}
+
+function renderStats(){
+  const date=document.getElementById('viewDate')?.value || today();
+  const p=profitFor(date,'ALL');
+  document.getElementById('dashStats').innerHTML = [
+    ['ကော်မရှင် Total', money(p.commission.total)],
+    ['ကော်မရှင် Balance', signedMoney(p.commission.balance)],
+    ['ကာသီး Total', money(p.upper.total)],
+    ['ကာဒိုင် Balance', signedMoney(p.upper.balance)],
+    ['ဒိုင် အမြတ်/အရှုံး', signedMoney(p.profit)]
+  ].map(x=>`<div class="stat"><div class="k">${x[0]}</div><div class="v">${x[1]}</div></div>`).join('');
+}
+function renderDashboardTable(){
+  const date=document.getElementById('viewDate').value || today();
+  const session=document.getElementById('viewSession').value || 'ALL';
+  const entries=filterEntries(date,session);
+  const upper=filterUpper(date,session);
+  const p=profitFor(date,session);
+  let html=`<div class="report-title">${date} ${session==='ALL'?'AM + PM':session} Dashboard</div>
+  <div class="report-sub">ကော်မရှင်ဘက် Balance − ကာဒိုင်ဘက် Balance = ဒိုင် အမြတ်/အရှုံး</div>
+  <div class="stats">
+    <div class="stat"><div class="k">ကော်မရှင် Balance</div><div class="v">${signedMoney(p.commission.balance)}</div></div>
+    <div class="stat"><div class="k">ကာဒိုင် Balance</div><div class="v">${signedMoney(p.upper.balance)}</div></div>
+    <div class="stat"><div class="k">ဒိုင် P/L</div><div class="v">${signedMoney(p.profit)}</div></div>
+    <div class="stat"><div class="k">အခြေအနေ</div><div class="v">${directionProfit(p.profit)}</div></div>
+    <div class="stat"><div class="k">Rows</div><div class="v">${entries.length + upper.length}</div></div>
+  </div>`;
+  html += commissionTable(entries, true);
+  html += `<br><h3>ကာဒိုင် / ကာသီး</h3>` + upperTable(upper, true);
+  document.getElementById('dashboardTable').innerHTML=html;
+}
+function commissionTable(entries, actions=false){
+  if(!entries.length) return `<div class="empty">ကော်မရှင်စာရင်း မရှိသေးပါ</div>`;
+  let rows=entries.map(e=>{
+    const c=calcCommission(e);
+    return `<tr>
+      <td>${esc(e.date)}</td><td>${esc(e.session)}</td><td>${esc(c.name)}</td>
+      <td><span class="pill ${c.settlement==='daily'?'ok':'warn'}">${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}</span></td>
+      <td class="num">${money(c.total)}</td><td class="num">${c.corPct}%</td><td class="num">${money(c.cor)}</td>
+      <td class="num">${money(c.pAmount)}</td><td class="num">${c.pRate}</td><td class="num">${money(c.payout)}</td>
+      <td class="num">${signedMoney(c.balance)}</td><td>${directionCommission(c.balance)}</td>
+      ${actions?`<td class="no-print"><button class="ghost" onclick="editEntry('${e.id}')">Edit</button> <button class="danger" onclick="delEntry('${e.id}')">Del</button></td>`:''}
+    </tr>`;
+  }).join('');
+  const s=sumCommission(entries);
+  return `<div class="tablewrap"><table>
+    <thead><tr><th>Date</th><th>AM/PM</th><th>Name</th><th>Type</th><th class="num">Total</th><th class="num">Cor%</th><th class="num">Cor</th><th class="num">P Amt</th><th class="num">P Rate</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th>${actions?'<th class="no-print">Action</th>':''}</tr></thead>
+    <tbody>${rows}
+    <tr><th colspan="4">Total</th><th class="num">${money(s.total)}</th><th></th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th></th><th class="num">${money(s.payout)}</th><th class="num">${signedMoney(s.balance)}</th><th></th>${actions?'<th></th>':''}</tr>
+    </tbody></table></div>`;
+}
+function upperTable(list, actions=false){
+  if(!list.length) return `<div class="empty">ကာဒိုင် / ကာသီး စာရင်း မရှိသေးပါ</div>`;
+  let rows=list.map(e=>{
+    const c=calcUpper(e);
+    return `<tr>
+      <td>${esc(e.date)}</td><td>${esc(e.session)}</td><td>${esc(state.kadai.name)}</td>
+      <td class="num">${money(c.total)}</td><td class="num">${c.corPct}%</td><td class="num">${money(c.cor)}</td>
+      <td class="num">${money(c.pAmount)}</td><td class="num">${c.pRate}</td><td class="num">${money(c.payout)}</td>
+      <td class="num">${signedMoney(c.balance)}</td><td>${directionUpper(c.balance)}</td>
+      ${actions?`<td class="no-print"><button class="danger" onclick="delUpper('${e.id}')">Del</button></td>`:''}
+    </tr>`;
+  }).join('');
+  const s=sumUpper(list);
+  return `<div class="tablewrap"><table>
+    <thead><tr><th>Date</th><th>AM/PM</th><th>ကာဒိုင်</th><th class="num">ကာသီး Total</th><th class="num">Cor%</th><th class="num">Cor ပြန်ရ</th><th class="num">P Amt</th><th class="num">P Rate</th><th class="num">P ပြန်ရ</th><th class="num">Balance</th><th>Direction</th>${actions?'<th class="no-print">Action</th>':''}</tr></thead>
+    <tbody>${rows}
+    <tr><th colspan="3">Total</th><th class="num">${money(s.total)}</th><th></th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th></th><th class="num">${money(s.payout)}</th><th class="num">${signedMoney(s.balance)}</th><th></th>${actions?'<th></th>':''}</tr>
+    </tbody></table></div>`;
+}
+function renderDailyReport(){
+  const date=document.getElementById('reportDate').value || today();
+  const session=document.getElementById('reportSession').value || 'ALL';
+  const entries=filterEntries(date,session);
+  const upper=filterUpper(date,session);
+  const p=profitFor(date,session);
+  const html=`<div class="report-title">${date} ${session==='ALL'?'Daily':session} Report</div>
+  <div class="report-sub">ကော်မရှင် − ကာဒိုင် = ဒိုင်အမြတ်/အရှုံး</div>
+  <div class="stats">
+    <div class="stat"><div class="k">ကော်မရှင် Total</div><div class="v">${money(p.commission.total)}</div></div>
+    <div class="stat"><div class="k">ကော်မရှင် Balance</div><div class="v">${signedMoney(p.commission.balance)}</div></div>
+    <div class="stat"><div class="k">ကာဒိုင် Balance</div><div class="v">${signedMoney(p.upper.balance)}</div></div>
+    <div class="stat"><div class="k">ဒိုင် P/L</div><div class="v">${signedMoney(p.profit)}</div></div>
+    <div class="stat"><div class="k">Status</div><div class="v">${directionProfit(p.profit)}</div></div>
+  </div>
+  <h3>ကော်မရှင် စာရင်း</h3>${commissionTable(entries,false)}
+  <br><h3>ကာဒိုင် စာရင်း</h3>${upperTable(upper,false)}`;
+  document.getElementById('dailyReport').innerHTML=html;
+}
+function renderSettlement(){
+  const date=document.getElementById('reportDate').value || today();
+  const entries=filterEntries(date,'ALL');
+  const daily=entries.filter(e=>calcCommission(e).settlement==='daily');
+  const weekly=entries.filter(e=>calcCommission(e).settlement==='weekly');
+  document.getElementById('dailySettlement').innerHTML=`<div class="small">နေ့တိုင်း ငွေရှင်းမည့် ကော်မရှင်များ</div><br>${commissionTable(daily,false)}`;
+  document.getElementById('weeklyHolding').innerHTML=`<div class="small">တပတ်ပြည့်မှ ငွေရှင်းမည့် ကော်မရှင်များ — Daily ထဲမှာ record ဝင်ထားပြီး Weekly List မှာ စုပေါင်းပြမယ်။</div><br>${commissionTable(weekly,false)}`;
+}
+function weekDates(start){
+  const d=new Date(start+'T00:00:00');
+  const arr=[];
+  for(let i=0;i<5;i++){ const x=new Date(d); x.setDate(d.getDate()+i); arr.push(x.toISOString().slice(0,10)); }
+  return arr;
+}
+function setThisWeek(doRender=true){
+  const el=document.getElementById('weekStart'); if(!el) return;
+  const d=new Date();
+  const day=d.getDay(); // Sun 0
+  const diff=(day===0?-6:1-day);
+  d.setDate(d.getDate()+diff);
+  el.value=d.toISOString().slice(0,10);
+  if(doRender) renderAll();
+}
+function renderWeekly(){
+  const start=document.getElementById('weekStart').value || today();
+  const dates=weekDates(start);
+  const nameFilter=document.getElementById('weekName').value || 'ALL';
+  let list=state.entries.filter(e=>dates.includes(e.date));
+  if(nameFilter!=='ALL') list=list.filter(e=>e.nameId===nameFilter);
+  // Weekly page focuses on weekly settlement names but keeps all if a specific daily name selected.
+  if(nameFilter==='ALL') list=list.filter(e=>calcCommission(e).settlement==='weekly');
+  const byName={};
+  list.forEach(e=>{
+    const c=calcCommission(e);
+    const key=e.nameId;
+    if(!byName[key]) byName[key]={name:c.name,total:0,cor:0,pAmount:0,payout:0,balance:0,rows:0};
+    byName[key].total+=c.total; byName[key].cor+=c.cor; byName[key].pAmount+=c.pAmount; byName[key].payout+=c.payout; byName[key].balance+=c.balance; byName[key].rows++;
+  });
+  const rows=Object.values(byName).map(x=>`<tr><td>${esc(x.name)}</td><td class="num">${money(x.total)}</td><td class="num">${money(x.cor)}</td><td class="num">${money(x.pAmount)}</td><td class="num">${money(x.payout)}</td><td class="num">${signedMoney(x.balance)}</td><td>${directionCommission(x.balance)}</td><td class="num">${x.rows}</td></tr>`).join('');
+  const sum=Object.values(byName).reduce((a,x)=>{a.total+=x.total;a.cor+=x.cor;a.pAmount+=x.pAmount;a.payout+=x.payout;a.balance+=x.balance;a.rows+=x.rows;return a;},{total:0,cor:0,pAmount:0,payout:0,balance:0,rows:0});
+  let detail='';
+  dates.forEach(d=>{
+    const dayList=list.filter(e=>e.date===d);
+    if(dayList.length) detail += `<h3>${d}</h3>${commissionTable(dayList,false)}<br>`;
+  });
+  document.getElementById('weeklyReport').innerHTML=`<div class="report-title">Weekly List (${dates[0]} to ${dates[4]})</div>
+  <div class="report-sub">တပတ်ရှင်း Name များကို Mon–Fri စုပေါင်းထားသည်</div>
+  <div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amt</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="num">Rows</th></tr></thead>
+  <tbody>${rows || '<tr><td colspan="8" class="center muted">Weekly စာရင်း မရှိသေးပါ</td></tr>'}
+  <tr><th>Total</th><th class="num">${money(sum.total)}</th><th class="num">${money(sum.cor)}</th><th class="num">${money(sum.pAmount)}</th><th class="num">${money(sum.payout)}</th><th class="num">${signedMoney(sum.balance)}</th><th></th><th class="num">${sum.rows}</th></tr>
+  </tbody></table></div><br>${detail}`;
+}
+function renderNamesTable(){
+  document.getElementById('kadaiName').value=state.kadai.name||'ကာဒိုင်';
+  document.getElementById('kadaiCor').value=state.kadai.corPct??10;
+  document.getElementById('kadaiRate').value=state.kadai.pRate??80;
+  if(!state.names.length){ document.getElementById('namesTable').innerHTML='<div class="empty">Name မရှိသေးပါ</div>'; return; }
+  const rows=state.names.map(n=>`<tr><td>${esc(n.name)}</td><td>${n.settlement==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td class="no-print"><button class="ghost" onclick="editName('${n.id}')">Edit</button> <button class="danger" onclick="deleteName('${n.id}')">Del</button></td></tr>`).join('');
+  document.getElementById('namesTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">Cor%</th><th class="num">P Rate</th><th class="no-print">Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function syncReportDate(){
+  const d=document.getElementById('reportDate').value;
+  if(d) document.getElementById('viewDate').value=d;
+}
+function renderHints(){
+  const nameId=document.getElementById('entryName').value;
+  const n=nameById(nameId);
+  document.getElementById('entryHint').innerHTML = nameId ? `Selected: ${esc(n.name)} | Cor ${money(n.corPct)}% | P Rate ${money(n.pRate)} | ${n.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}` : '';
+  document.getElementById('upperHint').innerHTML = `ကာဒိုင်: ${esc(state.kadai.name)} | Cor ပြန်ရ ${money(state.kadai.corPct)}% | P Rate ပြန်ရ ${money(state.kadai.pRate)}`;
+}
+function renderAll(){
+  fillSelects();
+  renderHints();
+  renderStats();
+  renderDashboardTable();
+  renderDailyReport();
+  renderSettlement();
+  renderWeekly();
+  renderNamesTable();
+}
+function copyTodayText(){
+  const date=document.getElementById('reportDate').value || document.getElementById('viewDate').value || today();
+  const session=document.getElementById('reportSession')?.value || document.getElementById('viewSession')?.value || 'ALL';
+  const p=profitFor(date,session);
+  const lines=[];
+  lines.push(`ဒိုင် စာရင်း ${date} ${session==='ALL'?'AM+PM':session}`);
+  lines.push(`ကော်မရှင် Total: ${money(p.commission.total)}`);
+  lines.push(`ကော်မရှင် Cor: ${money(p.commission.cor)}`);
+  lines.push(`ကော်မရှင် P လျော်ကြေး: ${money(p.commission.payout)}`);
+  lines.push(`ကော်မရှင် Balance: ${money(p.commission.balance)}`);
+  lines.push(`ကာသီး Total: ${money(p.upper.total)}`);
+  lines.push(`ကာဒိုင် Cor ပြန်ရ: ${money(p.upper.cor)}`);
+  lines.push(`ကာဒိုင် P ပြန်ရ: ${money(p.upper.payout)}`);
+  lines.push(`ကာဒိုင် Balance: ${money(p.upper.balance)}`);
+  lines.push(`ဒိုင် အမြတ်/အရှုံး: ${money(p.profit)}`);
+  navigator.clipboard?.writeText(lines.join('\n')).then(()=>toast('Copy ပြီးပါပြီ')).catch(()=>alert(lines.join('\n')));
+}
+function printPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('print-target'));
+  document.getElementById(id).classList.add('print-target');
+  window.print();
+}
+function clearToday(){
+  const d=document.getElementById('viewDate').value || today();
+  if(!confirm(`${d} ရက်နေ့စာရင်းအားလုံး ဖျက်မလား?`)) return;
+  state.entries=state.entries.filter(e=>e.date!==d);
+  state.upperEntries=state.upperEntries.filter(e=>e.date!==d);
+  saveState(); renderAll(); toast('ယနေ့စာရင်း ဖျက်ပြီးပါပြီ');
+}
+function resetAll(){
+  if(!confirm('App data အားလုံး Reset လုပ်မလား?')) return;
+  localStorage.removeItem(KEY);
+  state=defaultState(); saveState(); init(); toast('Reset ပြီးပါပြီ');
+}
+function exportBackup(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='dealer-cps-kadai-backup-'+today()+'.json'; a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importBackup(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const obj=JSON.parse(r.result);
+      if(!obj.names || !Array.isArray(obj.names)) throw new Error('bad');
+      state=obj; saveState(); init(); toast('Restore ပြီးပါပြီ');
+    }catch(e){ alert('Backup file မမှန်ပါ'); }
+  };
+  r.readAsText(file);
+}
+function init(){
+  setDates();
+  fillSelects();
+  document.getElementById('entryName').addEventListener('change', renderHints);
+  document.getElementById('entryDate').addEventListener('change', ()=>{document.getElementById('viewDate').value=document.getElementById('entryDate').value;document.getElementById('reportDate').value=document.getElementById('entryDate').value;renderAll();});
+  document.getElementById('upperDate').addEventListener('change', ()=>{document.getElementById('viewDate').value=document.getElementById('upperDate').value;document.getElementById('reportDate').value=document.getElementById('upperDate').value;renderAll();});
+  ['entrySession','upperSession'].forEach(id=>document.getElementById(id).addEventListener('change', renderHints));
+  renderAll();
+}
+init();
+</script>
+</body>
+</html>
