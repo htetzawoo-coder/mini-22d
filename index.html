@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ဒိုင် CPS App v8 - Login Owner Control</title>
+  <title>ဒိုင် CPS App v11 Firebase Cloud</title>
   <style>
     :root{
       --bg:#eef4fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#d8e2ef;
@@ -44,7 +44,7 @@
     .image-board{background:linear-gradient(180deg,#ffffff,#f8fbff);border:1px solid #cfe0f5;border-radius:24px;padding:18px;box-shadow:0 18px 40px rgba(15,23,42,.08)}
     .image-header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.image-title{font-size:24px;font-weight:950}.image-sub{color:#64748b;font-size:12px;font-weight:800;margin-top:3px}.image-badge{padding:8px 10px;border-radius:999px;font-size:12px;font-weight:950;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
     .image-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}.sum-box{background:#fff;border:1px solid #dbe7f5;border-radius:18px;padding:12px}.sum-box .label{font-size:12px;color:#64748b;font-weight:900}.sum-box .big{font-size:22px;font-weight:950;margin-top:4px}
-    .section-title{font-size:16px;font-weight:950;margin:0 0 10px;color:#0f172a}.share-list{display:grid;gap:10px}.share-row{display:grid;grid-template-columns:1.3fr .7fr .8fr .9fr .9fr;gap:10px;align-items:center;padding:10px 12px;background:#fff;border:1px solid #dbe7f5;border-radius:16px}.share-row.head{background:#eff6ff;font-weight:950;color:#1e3a8a}.note-footer{margin-top:12px;padding-top:10px;border-top:1px dashed #d6e3f1;color:#64748b;font-size:12px;font-weight:800;line-height:1.5}.mono{font-variant-numeric:tabular-nums}.space{height:14px}.name-bold{font-weight:950;color:#0f172a}
+    .section-title{font-size:16px;font-weight:950;margin:0 0 10px;color:#0f172a}.share-list{display:grid;gap:10px}.share-row{display:grid;grid-template-columns:1.3fr .7fr .8fr .9fr .9fr;gap:10px;align-items:center;padding:10px 12px;background:#fff;border:1px solid #dbe7f5;border-radius:16px}.share-row.head{background:#eff6ff;font-weight:950;color:#1e3a8a}.note-footer{margin-top:12px;padding-top:10px;border-top:1px dashed #d6e3f1;color:#64748b;font-size:12px;font-weight:800;line-height:1.5}.mono{font-variant-numeric:tabular-nums}.space{height:14px}.name-bold{font-weight:950;color:#0f172a}.edit-note{margin-top:8px;padding:8px 10px;border-radius:12px;background:#fef3c7;color:#92400e;font-size:12px;font-weight:900;display:none}.editing-row{outline:3px solid #f59e0b;background:#fffbeb!important;box-shadow:inset 0 0 0 9999px rgba(245,158,11,.06)}.filter-panel{margin:10px 0;padding:12px;border:1px solid #dbeafe;background:#eff6ff;border-radius:16px}
     .toast{position:fixed;right:18px;bottom:18px;background:#0f172a;color:#fff;padding:12px 14px;border-radius:14px;box-shadow:var(--shadow);display:none;z-index:99;font-weight:900}
     .auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(135deg,#dbeafe,#f8fafc)}
     .auth-card{width:min(560px,100%);background:#fff;border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 24px 55px rgba(15,23,42,.16)}
@@ -83,23 +83,30 @@
 <div id="authGate" class="auth-shell">
   <div class="auth-card">
     <div class="auth-title">ဒိုင် CPS App Login</div>
-    <div class="auth-sub">အသုံးပြုရန် Login / Register လုပ်ပါ။ Owner default account — <b>owner</b> / <b>123456</b></div>
+    <div class="auth-sub">Google account ဖြင့် Register / Login လုပ်နိုင်ပါသည်။ Register တွင် Phone number ဖြည့်ပါ။ Login ကို Username or Phone + Password ဖြင့် ဝင်နိုင်ပါသည်။</div>
     <div class="auth-switch">
       <button id="loginSwitch" class="active" onclick="showAuthMode('login')">Login ဝင်ရန်</button>
       <button id="registerSwitch" class="ghost" onclick="showAuthMode('register')">Register လုပ်ရန်</button>
     </div>
     <div id="loginBox">
       <div class="row two">
-        <div><label>Username</label><input id="loginUser" autocomplete="username" placeholder="username"></div>
+        <div><label>Username or Phone</label><input id="loginUser" autocomplete="username" placeholder="username or phone"></div>
         <div><label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="password"></div>
       </div>
       <div class="space"></div>
       <button class="ok" style="width:100%" onclick="loginAccount()">Login ဝင်မည်</button>
+      <div class="space"></div>
+      <button class="ghost" style="width:100%" onclick="googleLoginOrRegister(false)">Google ဖြင့် Login / Register</button>
     </div>
     <div id="registerBox" class="hidden">
       <div class="row two">
         <div><label>Name</label><input id="regName" placeholder="သင့်နာမည်"></div>
+        <div><label>Phone Number</label><input id="regPhone" inputmode="tel" placeholder="09xxxxxxxxx"></div>
+      </div>
+      <div class="space"></div>
+      <div class="row two">
         <div><label>Username</label><input id="regUser" autocomplete="username" placeholder="username"></div>
+        <div><label>Email / Google Account</label><input id="regEmail" type="email" autocomplete="email" placeholder="example@gmail.com"></div>
       </div>
       <div class="space"></div>
       <div class="row two">
@@ -108,6 +115,8 @@
       </div>
       <div class="space"></div>
       <button class="ok" style="width:100%" onclick="registerAccount()">Register ပြီး အသုံးပြုမည်</button>
+      <div class="space"></div>
+      <button class="ghost" style="width:100%" onclick="googleLoginOrRegister(true)">Google ဖြင့် Register/Login</button>
     </div>
     <div id="authMsg" class="small" style="margin-top:12px"></div>
   </div>
@@ -125,8 +134,8 @@
 <div class="app" id="mainApp" style="display:none">
   <div class="topbar">
     <div>
-      <div class="title">ဒိုင် စာရင်းရှင်း App v8</div>
-      <div class="subtitle">Register/Login + Owner Exp Control + 3D Buttons + Viber Share Image version</div>
+      <div class="title">ဒိုင် စာရင်းရှင်း App v11 Cloud</div>
+      <div class="subtitle">Firebase Cloud Sync + Google Register + Phone/Username Login + Owner Control</div>
     </div>
     <div class="btns no-print userbar">
       <span id="currentUserBadge" class="user-pill">User</span>
@@ -157,11 +166,13 @@
           <div><label>Session</label><select id="entrySession"><option>AM</option><option>PM</option></select></div>
           <div><label>ကော်မရှင် Name</label><select id="entryName"></select></div>
         </div><br>
+        <input id="editingCommissionEntryId" type="hidden">
         <div class="row three">
           <div><label>Total</label><input id="entryTotal" inputmode="decimal" placeholder="100000"></div>
           <div><label>P Amount</label><input id="entryPAmount" inputmode="decimal" placeholder="500"></div>
-          <div><button class="ok" style="width:100%" onclick="saveCommissionEntry()">Save / Update</button></div>
+          <div class="btns"><button class="ok" style="width:100%" onclick="saveCommissionEntry()">Save / Update</button><button class="ghost" type="button" onclick="cancelEditCommissionEntry()">Edit ပယ်ဖျက်</button></div>
         </div>
+        <div id="commissionEditNote" class="edit-note"></div>
         <p class="small" id="entryHint"></p>
       </div>
 
@@ -173,11 +184,13 @@
           <div><label>Session</label><select id="kadaiSession"><option>AM</option><option>PM</option></select></div>
           <div><label>ကာဒိုင် Name</label><select id="kadaiEntryName"></select></div>
         </div><br>
+        <input id="editingKadaiEntryId" type="hidden">
         <div class="row three">
           <div><label>ကာသီး Total</label><input id="kadaiTotal" inputmode="decimal" placeholder="100000"></div>
           <div><label>P Amount</label><input id="kadaiPAmount" inputmode="decimal" placeholder="500"></div>
-          <div><button class="ok" style="width:100%" onclick="saveKadaiEntry()">Save / Update</button></div>
+          <div class="btns"><button class="ok" style="width:100%" onclick="saveKadaiEntry()">Save / Update</button><button class="ghost" type="button" onclick="cancelEditKadaiEntry()">Edit ပယ်ဖျက်</button></div>
         </div>
+        <div id="kadaiEditNote" class="edit-note"></div>
         <p class="small" id="kadaiHint"></p>
       </div>
     </div>
@@ -188,6 +201,13 @@
         <div><label>ကြည့်မည့် Date</label><input id="viewDate" type="date" onchange="syncDatesFromView();renderAll()"></div>
         <div><label>Session Filter</label><select id="viewSession" onchange="renderAll()"><option value="ALL">AM + PM</option><option>AM</option><option>PM</option></select></div>
         <div class="btns"><button class="ghost" onclick="copyTodayText()">Copy Viber Text</button><button class="ghost" onclick="printPage('daily')">Print Report</button></div>
+      </div>
+      <div class="filter-panel no-print">
+        <div class="row three">
+          <div><label>Entry History Search</label><input id="historySearch" placeholder="Name / ကာဒိုင် / AM / PM ရှာရန်" oninput="renderAll()"></div>
+          <div><label>Entry Type Filter</label><select id="historyType" onchange="renderAll()"><option value="ALL">အားလုံး</option><option value="commission">ကော်မရှင်</option><option value="kadai">ကာဒိုင်</option></select></div>
+          <div><label>Edit Highlight</label><div class="small">Edit နှိပ်ထားသော row ကို အဝါရောင် highlight ပြပါမယ်။</div></div>
+        </div>
       </div>
       <div class="space no-print"></div>
       <div id="dashboardTable"></div>
@@ -346,13 +366,29 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script>
-const KEY='dealer_cps_multi_kadai_v8';
-const ACCOUNTS_KEY='dealer_cps_accounts_v8';
-const SESSION_KEY='dealer_cps_session_v8';
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBSUWtTT6yYVnwxzXqjIwTfp69Tp6FfMkw",
+  authDomain: "cps-dealer-app.firebaseapp.com",
+  projectId: "cps-dealer-app",
+  storageBucket: "cps-dealer-app.firebasestorage.app",
+  messagingSenderId: "972837105671",
+  appId: "1:972837105671:web:15908f9a6f89e0ed74faa2"
+};
+
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const KEY='dealer_cps_multi_kadai_v11_cloud_cache';
 let state = loadState();
 let currentAccount=null;
 let appStarted=false;
+let cloudLoading=false;
+let cloudUnsubscribe=null;
 function uid(){ return 'id_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8); }
 function today(){ return new Date().toISOString().slice(0,10); }
 function num(v){ if(v===undefined||v===null||v==='') return 0; return Number(String(v).replace(/,/g,''))||0; }
@@ -360,15 +396,9 @@ function money(v){ return (Number(v)||0).toLocaleString('en-US',{maximumFraction
 function esc(s){ return String(s??'').replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
 function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.style.display='block'; setTimeout(()=>el.style.display='none',1800); }
 
-function loadAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'[]'); }catch(e){ return []; } }
-function saveAccounts(accounts){ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts)); }
-function ensureOwnerAccount(){
-  const accounts=loadAccounts();
-  if(!accounts.some(a=>a.role==='owner')){
-    accounts.push({id:uid(),displayName:'App Owner',username:'owner',password:'123456',role:'owner',active:true,expireAt:'',notice:'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။',createdAt:new Date().toISOString()});
-    saveAccounts(accounts);
-  }
-}
+
+function normalizeKey(value){ return String(value||'').trim().toLowerCase().replace(/\s+/g,''); }
+function authMsg(msg,bad=true){ const el=document.getElementById('authMsg'); el.style.color=bad?'#b91c1c':'#166534'; el.textContent=msg; }
 function showAuthMode(mode){
   document.getElementById('loginBox').classList.toggle('hidden', mode!=='login');
   document.getElementById('registerBox').classList.toggle('hidden', mode!=='register');
@@ -376,43 +406,81 @@ function showAuthMode(mode){
   document.getElementById('registerSwitch').classList.toggle('active', mode==='register');
   document.getElementById('authMsg').textContent='';
 }
-function authMsg(msg,bad=true){ const el=document.getElementById('authMsg'); el.style.color=bad?'#b91c1c':'#166534'; el.textContent=msg; }
-function isAccountExpired(acc){
-  if(!acc) return true;
-  if(acc.role==='owner') return false;
-  if(acc.active===false) return true;
-  if(acc.expireAt && new Date(acc.expireAt).getTime() < Date.now()) return true;
-  return false;
+async function isFirstOwnerSetup(){ const meta=await db.collection('meta').doc('app').get(); return !meta.exists; }
+async function getUserProfile(uid){ const snap=await db.collection('users').doc(uid).get(); return snap.exists ? {id:uid,...snap.data()} : null; }
+function isAccountExpired(acc){ if(!acc) return true; if(acc.role==='owner') return false; if(acc.active===false) return true; if(acc.expireAt && new Date(acc.expireAt).getTime() < Date.now()) return true; return false; }
+function getAccountNotice(acc){ return (acc&&acc.notice)||'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။'; }
+async function writeLoginKeys(profile){
+  if(profile.username) await db.collection('loginKeys').doc('u_'+normalizeKey(profile.username)).set({uid:profile.uid,email:profile.email,type:'username'},{merge:true});
+  if(profile.phone) await db.collection('loginKeys').doc('p_'+normalizeKey(profile.phone)).set({uid:profile.uid,email:profile.email,type:'phone'},{merge:true});
+  if(profile.email) await db.collection('loginKeys').doc('e_'+normalizeKey(profile.email)).set({uid:profile.uid,email:profile.email,type:'email'},{merge:true});
 }
-function getAccountNotice(acc){
-  return (acc && acc.notice) ? acc.notice : 'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။';
+async function createOrUpdateProfile(user, extra={}){
+  const uid=user.uid;
+  const oldSnap=await db.collection('users').doc(uid).get();
+  const firstOwner=await isFirstOwnerSetup();
+  const old=oldSnap.exists ? oldSnap.data() : {};
+  const profile={
+    uid,
+    displayName:extra.displayName||user.displayName||old.displayName||'User',
+    username:normalizeKey(extra.username||old.username||(user.email?user.email.split('@')[0]:'')),
+    phone:normalizeKey(extra.phone||old.phone||''),
+    email:user.email||extra.email||old.email||'',
+    googleEmail:user.email||old.googleEmail||'',
+    role:old.role || (firstOwner?'owner':'user'),
+    active: old.active===false ? false : true,
+    expireAt: old.expireAt || '',
+    notice: old.notice || 'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    createdAt: old.createdAt || firebase.firestore.FieldValue.serverTimestamp()
+  };
+  await db.collection('users').doc(uid).set(profile,{merge:true});
+  if(firstOwner) await db.collection('meta').doc('app').set({ownerUid:uid,createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  await writeLoginKeys(profile);
+  return {id:uid,...profile};
 }
-function loginAccount(){
-  ensureOwnerAccount();
-  const u=document.getElementById('loginUser').value.trim();
-  const p=document.getElementById('loginPass').value;
-  const acc=loadAccounts().find(a=>a.username===u && a.password===p);
-  if(!acc){ authMsg('Username သို့မဟုတ် Password မမှန်ပါ။'); return; }
-  sessionStorage.setItem(SESSION_KEY, acc.id);
-  if(isAccountExpired(acc)){ showExpiredOnly(acc); return; }
-  currentAccount=acc;
-  startAuthenticatedApp();
+async function loginAccount(){
+  const key=normalizeKey(document.getElementById('loginUser').value);
+  const pass=document.getElementById('loginPass').value;
+  if(!key||!pass){ authMsg('Username/Phone နှင့် Password ထည့်ပါ။'); return; }
+  try{
+    let email=key.includes('@')?key:'';
+    if(!email){
+      let snap=await db.collection('loginKeys').doc('u_'+key).get();
+      if(!snap.exists) snap=await db.collection('loginKeys').doc('p_'+key).get();
+      if(!snap.exists) throw new Error('Username or phone မတွေ့ပါ။');
+      email=snap.data().email;
+    }
+    await auth.signInWithEmailAndPassword(email,pass);
+  }catch(e){ authMsg(e.message||'Login မအောင်မြင်ပါ။'); }
 }
-function registerAccount(){
-  ensureOwnerAccount();
-  const displayName=document.getElementById('regName').value.trim() || 'User';
-  const username=document.getElementById('regUser').value.trim();
+async function registerAccount(){
+  const displayName=document.getElementById('regName').value.trim()||'User';
+  const phone=normalizeKey(document.getElementById('regPhone').value);
+  const username=normalizeKey(document.getElementById('regUser').value);
+  const email=document.getElementById('regEmail').value.trim();
   const pass=document.getElementById('regPass').value;
   const pass2=document.getElementById('regPass2').value;
-  if(!username || !pass){ authMsg('Username နှင့် Password ထည့်ပါ။'); return; }
+  if(!displayName||!phone||!username||!email||!pass){ authMsg('Name, Phone, Username, Email, Password အားလုံးထည့်ပါ။'); return; }
   if(pass!==pass2){ authMsg('Password နှစ်ခု မတူပါ။'); return; }
-  const accounts=loadAccounts();
-  if(accounts.some(a=>a.username===username)){ authMsg('ဒီ Username ရှိပြီးသားဖြစ်ပါတယ်။'); return; }
-  const acc={id:uid(),displayName,username,password:pass,role:'user',active:true,expireAt:'',notice:'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။',createdAt:new Date().toISOString()};
-  accounts.push(acc); saveAccounts(accounts);
-  sessionStorage.setItem(SESSION_KEY, acc.id);
-  currentAccount=acc;
-  startAuthenticatedApp();
+  try{
+    if((await db.collection('loginKeys').doc('u_'+username).get()).exists) throw new Error('ဒီ Username ရှိပြီးသားဖြစ်ပါတယ်။');
+    if((await db.collection('loginKeys').doc('p_'+phone).get()).exists) throw new Error('ဒီ Phone number ရှိပြီးသားဖြစ်ပါတယ်။');
+    const cred=await auth.createUserWithEmailAndPassword(email,pass);
+    await cred.user.updateProfile({displayName});
+    await createOrUpdateProfile(cred.user,{displayName,phone,username,email});
+  }catch(e){ authMsg(e.message||'Register မအောင်မြင်ပါ။'); }
+}
+async function googleLoginOrRegister(isRegister=false){
+  const phone=normalizeKey(document.getElementById('regPhone')?.value||'');
+  const username=normalizeKey(document.getElementById('regUser')?.value||'');
+  const displayName=document.getElementById('regName')?.value.trim()||'';
+  if(isRegister && !phone){ authMsg('Google Register အတွက် Phone Number ဖြည့်ပါ။'); return; }
+  try{
+    const provider=new firebase.auth.GoogleAuthProvider();
+    const cred=await auth.signInWithPopup(provider);
+    await createOrUpdateProfile(cred.user,{displayName:displayName||cred.user.displayName,phone,username:username||(cred.user.email?cred.user.email.split('@')[0]:''),email:cred.user.email});
+  }catch(e){ authMsg(e.message||'Google login မအောင်မြင်ပါ။'); }
 }
 function showExpiredOnly(acc){
   document.getElementById('authGate').classList.add('hidden');
@@ -420,80 +488,88 @@ function showExpiredOnly(acc){
   document.getElementById('expiredScreen').classList.remove('hidden');
   document.getElementById('expiredMessage').textContent=getAccountNotice(acc);
 }
-function logoutAccount(){
-  sessionStorage.removeItem(SESSION_KEY);
-  currentAccount=null;
-  location.reload();
+async function logoutAccount(){ await auth.signOut(); currentAccount=null; location.reload(); }
+async function loadCloudState(){
+  cloudLoading=true;
+  try{
+    const ref=db.collection('appData').doc('main');
+    const snap=await ref.get();
+    if(snap.exists && snap.data().state){ state=snap.data().state; localStorage.setItem(KEY, JSON.stringify(state)); }
+    else await ref.set({state,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    if(cloudUnsubscribe) cloudUnsubscribe();
+    cloudUnsubscribe=ref.onSnapshot(s=>{
+      if(s.exists && s.data().state){
+        cloudLoading=true; state=s.data().state; localStorage.setItem(KEY,JSON.stringify(state)); cloudLoading=false;
+        if(appStarted) renderAll();
+      }
+    });
+  }catch(e){ console.warn(e); toast('Cloud load မအောင်မြင်ပါ။'); }
+  cloudLoading=false;
 }
-function startAuthenticatedApp(){
+async function startAuthenticatedApp(){
   document.getElementById('authGate').classList.add('hidden');
   document.getElementById('expiredScreen').classList.add('hidden');
   document.getElementById('mainApp').style.display='';
   applyAuthUI();
+  await loadCloudState();
   if(!appStarted){ init(); appStarted=true; } else renderAll();
 }
 function applyAuthUI(){
   if(!currentAccount) return;
   const badge=document.getElementById('currentUserBadge');
-  if(badge) badge.textContent=`${currentAccount.displayName||currentAccount.username} (${currentAccount.role==='owner'?'Owner':'User'})`;
-  document.querySelectorAll('.owner-only').forEach(el=>{
-    el.classList.toggle('owner-visible', currentAccount.role==='owner');
-    el.style.display=currentAccount.role==='owner'?'inline-flex':'none';
-  });
+  if(badge) badge.textContent=`${currentAccount.displayName||currentAccount.username||currentAccount.email} (${currentAccount.role==='owner'?'Owner':'User'})`;
+  document.querySelectorAll('.owner-only').forEach(el=>{ el.style.display=currentAccount.role==='owner'?'inline-flex':'none'; });
 }
 function initAuth(){
-  ensureOwnerAccount();
-  const id=sessionStorage.getItem(SESSION_KEY);
-  if(!id){ document.getElementById('authGate').classList.remove('hidden'); return; }
-  const acc=loadAccounts().find(a=>a.id===id);
-  if(!acc){ sessionStorage.removeItem(SESSION_KEY); document.getElementById('authGate').classList.remove('hidden'); return; }
-  if(isAccountExpired(acc)){ showExpiredOnly(acc); return; }
-  currentAccount=acc;
-  startAuthenticatedApp();
+  auth.onAuthStateChanged(async user=>{
+    if(!user){ document.getElementById('authGate').classList.remove('hidden'); document.getElementById('mainApp').style.display='none'; return; }
+    let profile=await getUserProfile(user.uid);
+    if(!profile) profile=await createOrUpdateProfile(user,{});
+    currentAccount=profile;
+    if(isAccountExpired(profile)){ showExpiredOnly(profile); return; }
+    await startAuthenticatedApp();
+  });
 }
-function renderOwnerPanel(){
-  const sel=document.getElementById('ownerUserSelect');
-  const table=document.getElementById('ownerUsersTable');
-  if(!sel || !table) return;
-  if(!currentAccount || currentAccount.role!=='owner'){
-    table.innerHTML='<div class="empty">Owner account ဖြင့် Login ဝင်မှ ကြည့်နိုင်ပါသည်။</div>';
-    return;
-  }
-  const accounts=loadAccounts();
-  const cur=sel.value;
-  sel.innerHTML=accounts.map(a=>`<option value="${a.id}">${esc(a.displayName||a.username)} — ${esc(a.username)}</option>`).join('');
-  if(cur && [...sel.options].some(o=>o.value===cur)) sel.value=cur;
-  else if(sel.options.length) sel.selectedIndex=0;
-  loadOwnerUserForm(false);
-  table.innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Active</th><th>Exp Date/Time</th><th>Status</th></tr></thead><tbody>${accounts.map(a=>`<tr><td class="name-bold">${esc(a.displayName||'-')}</td><td>${esc(a.username)}</td><td>${a.role==='owner'?'Owner':'User'}</td><td>${a.active!==false?'ON':'OFF'}</td><td>${a.expireAt?esc(a.expireAt):'<span class="muted">မသတ်မှတ်ထား</span>'}</td><td>${isAccountExpired(a)?'<span class="pill bad">Expired/Blocked</span>':'<span class="pill ok">Active</span>'}</td></tr>`).join('')}</tbody></table></div>`;
+async function renderOwnerPanel(){
+  const sel=document.getElementById('ownerUserSelect'), table=document.getElementById('ownerUsersTable');
+  if(!sel||!table) return;
+  if(!currentAccount||currentAccount.role!=='owner'){ table.innerHTML='<div class="empty">Owner account ဖြင့် Login ဝင်မှ ကြည့်နိုင်ပါသည်။</div>'; return; }
+  try{
+    const snap=await db.collection('users').get();
+    const users=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const cur=sel.value;
+    sel.innerHTML=users.map(a=>`<option value="${a.id}">${esc(a.displayName||a.email||a.username)} — ${esc(a.username||a.phone||a.email)}</option>`).join('');
+    if(cur && [...sel.options].some(o=>o.value===cur)) sel.value=cur; else if(sel.options.length) sel.selectedIndex=0;
+    loadOwnerUserForm(false);
+    table.innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Username</th><th>Phone</th><th>Email/Google</th><th>Role</th><th>Active</th><th>Exp Date/Time</th><th>Status</th></tr></thead><tbody>${users.map(a=>`<tr><td class="name-bold">${esc(a.displayName||'-')}</td><td>${esc(a.username||'-')}</td><td>${esc(a.phone||'-')}</td><td>${esc(a.email||a.googleEmail||'-')}</td><td>${a.role==='owner'?'Owner':'User'}</td><td>${a.active!==false?'ON':'OFF'}</td><td>${a.expireAt?esc(a.expireAt):'<span class="muted">မသတ်မှတ်ထား</span>'}</td><td>${isAccountExpired(a)?'<span class="pill bad">Expired/Blocked</span>':'<span class="pill ok">Active</span>'}</td></tr>`).join('')}</tbody></table></div>`;
+  }catch(e){ table.innerHTML='<div class="empty">User list ဖတ်မရပါ။ V11 Rules ကို Publish လုပ်ထားပါ။</div>'; }
 }
-function loadOwnerUserForm(keepNotice=true){
-  const sel=document.getElementById('ownerUserSelect'); if(!sel) return;
-  const acc=loadAccounts().find(a=>a.id===sel.value); if(!acc) return;
+async function loadOwnerUserForm(keepNotice=true){
+  const sel=document.getElementById('ownerUserSelect'); if(!sel||!sel.value) return;
+  const snap=await db.collection('users').doc(sel.value).get(); if(!snap.exists) return;
+  const acc={id:snap.id,...snap.data()};
   document.getElementById('ownerActive').value=acc.active===false?'no':'yes';
   document.getElementById('ownerExpireAt').value=acc.expireAt||'';
   document.getElementById('ownerRole').value=acc.role||'user';
   if(keepNotice!==false || !document.getElementById('ownerNotice').value) document.getElementById('ownerNotice').value=acc.notice||'';
 }
-function saveOwnerUserControl(){
-  if(!currentAccount || currentAccount.role!=='owner'){ toast('Owner only'); return; }
+async function saveOwnerUserControl(){
+  if(!currentAccount||currentAccount.role!=='owner'){ toast('Owner only'); return; }
   const id=document.getElementById('ownerUserSelect').value;
-  const accounts=loadAccounts();
-  const acc=accounts.find(a=>a.id===id);
-  if(!acc) return;
-  acc.active=document.getElementById('ownerActive').value==='yes';
-  acc.expireAt=document.getElementById('ownerExpireAt').value;
-  acc.role=document.getElementById('ownerRole').value;
-  acc.notice=document.getElementById('ownerNotice').value.trim() || 'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။';
-  saveAccounts(accounts);
-  if(acc.id===currentAccount.id){ currentAccount=acc; sessionStorage.setItem(SESSION_KEY, acc.id); }
-  renderOwnerPanel();
-  toast('User account control save ပြီးပါပြီ');
+  await db.collection('users').doc(id).set({
+    active:document.getElementById('ownerActive').value==='yes',
+    expireAt:document.getElementById('ownerExpireAt').value,
+    role:document.getElementById('ownerRole').value,
+    notice:document.getElementById('ownerNotice').value.trim()||'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။',
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true});
+  if(id===currentAccount.id) currentAccount=await getUserProfile(id);
+  await renderOwnerPanel(); toast('User account control save ပြီးပါပြီ');
 }
 
 function defaultState(){ return { commissions:[ {id:uid(),name:'နမူနာနေ့ရှင်း',settlement:'daily',corPct:10,pRate:80,active:true}, {id:uid(),name:'နမူနာတပတ်ရှင်း',settlement:'weekly',corPct:10,pRate:80,active:true} ], kadais:[ {id:uid(),name:'ကာဒိုင် 1',corPct:10,pRate:80,active:true} ], commissionEntries:[], kadaiEntries:[] }; }
 function loadState(){ try{ const raw=localStorage.getItem(KEY); if(!raw) return defaultState(); const o=JSON.parse(raw); o.commissions=o.commissions||[]; o.kadais=o.kadais||[]; o.commissionEntries=o.commissionEntries||[]; o.kadaiEntries=o.kadaiEntries||[]; return o; }catch(e){ return defaultState(); } }
-function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); if(db && auth.currentUser && !cloudLoading){ db.collection('appData').doc('main').set({state,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedBy:auth.currentUser.uid},{merge:true}).catch(e=>console.warn(e)); } }
 function showPage(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page===id)); renderAll(); }
 function activeCommissions(){ return state.commissions.filter(x=>x.active!==false); }
 function activeKadais(){ return state.kadais.filter(x=>x.active!==false); }
@@ -527,8 +603,12 @@ function dirComm(v){ if(v>0) return '<span class="pill ok">ကော်မရှ
 function dirKadai(v){ if(v>0) return '<span class="pill bad">ကာဒိုင်ထံ ပေးရမည်</span>'; if(v<0) return '<span class="pill ok">ကာဒိုင်ထံမှ ရမည်</span>'; return '<span class="pill dark">ရှင်းပြီး</span>'; }
 function profitDir(v){ if(v>0) return '<span class="pill ok">ဒိုင် မြတ်</span>'; if(v<0) return '<span class="pill bad">ဒိုင် ရှုံး</span>'; return '<span class="pill dark">မမြတ်/မရှုံး</span>'; }
 
-function saveCommissionEntry(){ const date=document.getElementById('entryDate').value||today(); const session=document.getElementById('entrySession').value; const nameId=document.getElementById('entryName').value; if(!nameId){ toast('ကော်မရှင် Name ထည့်ပါ'); return; } const total=num(document.getElementById('entryTotal').value), pAmount=num(document.getElementById('entryPAmount').value); const old=state.commissionEntries.find(e=>e.date===date&&e.session===session&&e.nameId===nameId); if(old){ old.total=total; old.pAmount=pAmount; } else state.commissionEntries.push({id:uid(),date,session,nameId,total,pAmount}); saveState(); document.getElementById('entryTotal').value=''; document.getElementById('entryPAmount').value=''; toast('ကော်မရှင်စာရင်း Save ပြီးပါပြီ'); renderAll(); }
-function saveKadaiEntry(){ const date=document.getElementById('kadaiDate').value||today(); const session=document.getElementById('kadaiSession').value; const kadaiId=document.getElementById('kadaiEntryName').value; if(!kadaiId){ toast('ကာဒိုင် Name ထည့်ပါ'); return; } const total=num(document.getElementById('kadaiTotal').value), pAmount=num(document.getElementById('kadaiPAmount').value); const old=state.kadaiEntries.find(e=>e.date===date&&e.session===session&&e.kadaiId===kadaiId); if(old){ old.total=total; old.pAmount=pAmount; } else state.kadaiEntries.push({id:uid(),date,session,kadaiId,total,pAmount}); saveState(); document.getElementById('kadaiTotal').value=''; document.getElementById('kadaiPAmount').value=''; toast('ကာဒိုင်စာရင်း Save ပြီးပါပြီ'); renderAll(); }
+function saveCommissionEntry(){ const date=document.getElementById('entryDate').value||today(); const session=document.getElementById('entrySession').value; const nameId=document.getElementById('entryName').value; if(!nameId){ toast('ကော်မရှင် Name ထည့်ပါ'); return; } const total=num(document.getElementById('entryTotal').value), pAmount=num(document.getElementById('entryPAmount').value); const editId=document.getElementById('editingCommissionEntryId').value; if(editId){ const row=state.commissionEntries.find(e=>e.id===editId); if(row){ row.date=date; row.session=session; row.nameId=nameId; row.total=total; row.pAmount=pAmount; } } else { const old=state.commissionEntries.find(e=>e.date===date&&e.session===session&&e.nameId===nameId); if(old){ old.total=total; old.pAmount=pAmount; } else state.commissionEntries.push({id:uid(),date,session,nameId,total,pAmount}); } saveState(); cancelEditCommissionEntry(true); document.getElementById('entryTotal').value=''; document.getElementById('entryPAmount').value=''; toast('ကော်မရှင်စာရင်း Save ပြီးပါပြီ'); renderAll(); }
+function editCommEntry(id){ const row=state.commissionEntries.find(e=>e.id===id); if(!row) return; document.getElementById('editingCommissionEntryId').value=row.id; document.getElementById('entryDate').value=row.date; document.getElementById('entrySession').value=row.session; document.getElementById('entryName').value=row.nameId; document.getElementById('entryTotal').value=row.total; document.getElementById('entryPAmount').value=row.pAmount; const note=document.getElementById('commissionEditNote'); note.style.display='block'; note.textContent='Edit mode: Total amount နှင့် P Amount ကို ပြင်ပြီး Save / Update နှိပ်ပါ။'; renderHints(); showPage('dashboard'); renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
+function cancelEditCommissionEntry(keepHiddenOnly=false){ document.getElementById('editingCommissionEntryId').value=''; const note=document.getElementById('commissionEditNote'); if(note){ note.style.display='none'; note.textContent=''; } if(!keepHiddenOnly){ document.getElementById('entryTotal').value=''; document.getElementById('entryPAmount').value=''; } }
+function saveKadaiEntry(){ const date=document.getElementById('kadaiDate').value||today(); const session=document.getElementById('kadaiSession').value; const kadaiId=document.getElementById('kadaiEntryName').value; if(!kadaiId){ toast('ကာဒိုင် Name ထည့်ပါ'); return; } const total=num(document.getElementById('kadaiTotal').value), pAmount=num(document.getElementById('kadaiPAmount').value); const editId=document.getElementById('editingKadaiEntryId').value; if(editId){ const row=state.kadaiEntries.find(e=>e.id===editId); if(row){ row.date=date; row.session=session; row.kadaiId=kadaiId; row.total=total; row.pAmount=pAmount; } } else { const old=state.kadaiEntries.find(e=>e.date===date&&e.session===session&&e.kadaiId===kadaiId); if(old){ old.total=total; old.pAmount=pAmount; } else state.kadaiEntries.push({id:uid(),date,session,kadaiId,total,pAmount}); } saveState(); cancelEditKadaiEntry(true); document.getElementById('kadaiTotal').value=''; document.getElementById('kadaiPAmount').value=''; toast('ကာဒိုင်စာရင်း Save ပြီးပါပြီ'); renderAll(); }
+function editKadaiEntry(id){ const row=state.kadaiEntries.find(e=>e.id===id); if(!row) return; document.getElementById('editingKadaiEntryId').value=row.id; document.getElementById('kadaiDate').value=row.date; document.getElementById('kadaiSession').value=row.session; document.getElementById('kadaiEntryName').value=row.kadaiId; document.getElementById('kadaiTotal').value=row.total; document.getElementById('kadaiPAmount').value=row.pAmount; const note=document.getElementById('kadaiEditNote'); note.style.display='block'; note.textContent='Edit mode: Total amount နှင့် P Amount ကို ပြင်ပြီး Save / Update နှိပ်ပါ။'; renderHints(); showPage('dashboard'); renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
+function cancelEditKadaiEntry(keepHiddenOnly=false){ document.getElementById('editingKadaiEntryId').value=''; const note=document.getElementById('kadaiEditNote'); if(note){ note.style.display='none'; note.textContent=''; } if(!keepHiddenOnly){ document.getElementById('kadaiTotal').value=''; document.getElementById('kadaiPAmount').value=''; } }
 function saveCommissionName(){ const id=document.getElementById('editCommId').value, name=document.getElementById('commName').value.trim(); if(!name){ toast('Name ထည့်ပါ'); return; } const obj={name,settlement:document.getElementById('commSettlement').value,corPct:num(document.getElementById('commCor').value),pRate:num(document.getElementById('commRate').value),active:true}; if(id){ const x=state.commissions.find(a=>a.id===id); if(x) Object.assign(x,obj); } else state.commissions.push({id:uid(),...obj}); saveState(); document.getElementById('editCommId').value=''; document.getElementById('commName').value=''; document.getElementById('commCor').value=''; document.getElementById('commRate').value=''; fillSelects(); renderAll(); toast('ကော်မရှင် Name Save ပြီးပါပြီ'); }
 function saveKadaiName(){ const id=document.getElementById('editKadaiId').value, name=document.getElementById('kadaiNameSet').value.trim(); if(!name){ toast('ကာဒိုင် Name ထည့်ပါ'); return; } const obj={name,corPct:num(document.getElementById('kadaiCorSet').value),pRate:num(document.getElementById('kadaiRateSet').value),active:true}; if(id){ const x=state.kadais.find(a=>a.id===id); if(x) Object.assign(x,obj); } else state.kadais.push({id:uid(),...obj}); saveState(); document.getElementById('editKadaiId').value=''; document.getElementById('kadaiNameSet').value=''; document.getElementById('kadaiCorSet').value=''; document.getElementById('kadaiRateSet').value=''; fillSelects(); renderAll(); toast('ကာဒိုင် Save ပြီးပါပြီ'); }
 function editComm(id){ const x=state.commissions.find(a=>a.id===id); if(!x) return; document.getElementById('editCommId').value=x.id; document.getElementById('commName').value=x.name; document.getElementById('commSettlement').value=x.settlement; document.getElementById('commCor').value=x.corPct; document.getElementById('commRate').value=x.pRate; showPage('settings'); }
@@ -559,8 +639,33 @@ function renderStats(){ const date=document.getElementById('viewDate').value||to
 function renderHints(){ const c=commById(document.getElementById('entryName').value); document.getElementById('entryHint').textContent=c.name?`Selected: ${c.name} | Cor ${money(c.corPct)}% | P Rate ${money(c.pRate)} | ${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}`:''; const k=kadaiById(document.getElementById('kadaiEntryName').value); document.getElementById('kadaiHint').textContent=k.name?`Selected: ${k.name} | Cor ${money(k.corPct)}% | P Rate ${money(k.pRate)}`:''; }
 function renderCommTable(){ const rows=state.commissions.map(n=>`<tr><td class="name-bold">${esc(n.name)}</td><td>${n.settlement==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td><button class="ghost" onclick="editComm('${n.id}')">Edit</button> <button class="danger" onclick="delComm('${n.id}')">Del</button></td></tr>`).join(''); document.getElementById('commTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">Cor%</th><th class="num">P Rate</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
 function renderKadaiTable(){ const rows=state.kadais.map(n=>`<tr><td class="name-bold">${esc(n.name)}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td><button class="ghost" onclick="editKadai('${n.id}')">Edit</button> <button class="danger" onclick="delKadai('${n.id}')">Del</button></td></tr>`).join(''); document.getElementById('kadaiTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Cor%</th><th class="num">P Rate</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="4" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
-function commissionEntryTable(date,session='ALL'){ const list=filterCommission(date,session); const rows=list.map(e=>{ const c=calcCommissionEntry(e); return `<tr><td>${e.date}</td><td>${e.session}</td><td class="name-bold">${esc(c.name)}</td><td>${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${commBalanceHtml(c.balance)}</td><td>${dirComm(c.balance)}</td><td class="no-print"><button class="danger" onclick="delCommEntry('${e.id}')">Del</button></td></tr>`; }).join(''); const s=sumComm(list); return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>Name</th><th>Type</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="11" class="center muted">No entries</td></tr>'}<tr><th colspan="4">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${commBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`; }
-function kadaiEntryTable(date,session='ALL'){ const list=filterKadai(date,session); const rows=list.map(e=>{ const c=calcKadaiEntry(e); return `<tr><td>${e.date}</td><td>${e.session}</td><td class="name-bold">${esc(c.name)}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${kadaiBalanceHtml(c.balance)}</td><td>${dirKadai(c.balance)}</td><td class="no-print"><button class="danger" onclick="delKadaiEntry('${e.id}')">Del</button></td></tr>`; }).join(''); const s=sumKadai(list); return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="10" class="center muted">No entries</td></tr>'}<tr><th colspan="3">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${kadaiBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`; }
+
+function historySearchText(){ return (document.getElementById('historySearch')?.value || '').trim().toLowerCase(); }
+function historyTypeFilter(){ return document.getElementById('historyType')?.value || 'ALL'; }
+function historyMatch(values){
+  const q=historySearchText();
+  if(!q) return true;
+  return values.some(v=>String(v??'').toLowerCase().includes(q));
+}
+
+function commissionEntryTable(date,session='ALL'){
+  if(historyTypeFilter()==='kadai') return '<div class="empty">Entry Type Filter က ကာဒိုင် ဖြစ်နေပါသည်</div>';
+  let list=filterCommission(date,session);
+  list=list.filter(e=>{ const c=calcCommissionEntry(e); return historyMatch([c.name,c.settlement,e.date,e.session,c.total,c.pAmount,c.balance]); });
+  const editingId=document.getElementById('editingCommissionEntryId')?.value || '';
+  const rows=list.map(e=>{ const c=calcCommissionEntry(e); const cls=editingId===e.id?' class="editing-row"':''; return `<tr${cls}><td>${e.date}</td><td>${e.session}</td><td class="name-bold">${esc(c.name)}</td><td>${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${commBalanceHtml(c.balance)}</td><td>${dirComm(c.balance)}</td><td class="no-print"><button class="ghost" onclick="editCommEntry('${e.id}')">Edit</button> <button class="danger" onclick="delCommEntry('${e.id}')">Del</button></td></tr>`; }).join('');
+  const s=sumComm(list);
+  return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>Name</th><th>Type</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="11" class="center muted">No entries</td></tr>'}<tr><th colspan="4">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${commBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`;
+}
+function kadaiEntryTable(date,session='ALL'){
+  if(historyTypeFilter()==='commission') return '<div class="empty">Entry Type Filter က ကော်မရှင် ဖြစ်နေပါသည်</div>';
+  let list=filterKadai(date,session);
+  list=list.filter(e=>{ const c=calcKadaiEntry(e); return historyMatch([c.name,e.date,e.session,c.total,c.pAmount,c.balance]); });
+  const editingId=document.getElementById('editingKadaiEntryId')?.value || '';
+  const rows=list.map(e=>{ const c=calcKadaiEntry(e); const cls=editingId===e.id?' class="editing-row"':''; return `<tr${cls}><td>${e.date}</td><td>${e.session}</td><td class="name-bold">${esc(c.name)}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${kadaiBalanceHtml(c.balance)}</td><td>${dirKadai(c.balance)}</td><td class="no-print"><button class="ghost" onclick="editKadaiEntry('${e.id}')">Edit</button> <button class="danger" onclick="delKadaiEntry('${e.id}')">Del</button></td></tr>`; }).join('');
+  const s=sumKadai(list);
+  return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="10" class="center muted">No entries</td></tr>'}<tr><th colspan="3">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${kadaiBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`;
+}
 function renderDashboardTable(){ const date=document.getElementById('viewDate').value||today(); const session=document.getElementById('viewSession').value||'ALL'; const totals=masterTotals(date); let html=`<h2 style="margin:0 0 12px">${date} Dashboard</h2><div class="small">တပတ်ရှင်း rows များတွင် Running Balance က Monday မှ ယနေ့အထိ စုပေါင်းထားသော amount ဖြစ်ပါတယ်။</div><div class="space"></div>`; html+=`<div class="grid two"><div><h3>ကော်မရှင် Entries</h3>${commissionEntryTable(date,session)}</div><div><h3>ကာဒိုင် Entries</h3>${kadaiEntryTable(date,session)}</div></div>`; html+=`<div class="space"></div><div class="grid two"><div><h3>ကော်မရှင် စာရင်းရှင်းချုပ်</h3>${settlementCommTable(totals.commRows)}</div><div><h3>ကာဒိုင် စာရင်းချုပ်</h3>${settlementKadaiTable(totals.kadaiRows)}</div></div>`; document.getElementById('dashboardTable').innerHTML=html; }
 function settlementCommTable(rows){ return `<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">ယခင် Balance</th><th class="num">ယနေ့ Balance</th><th class="num">စုစုပေါင်း Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name-bold">${esc(r.name)}</td><td>${r.type==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${r.type==='weekly'?commBalanceHtml(r.prevBalance):'<span class="muted">-</span>'}</td><td class="num">${commBalanceHtml(r.todayBalance)}</td><td class="num">${commBalanceHtml(r.runningBalance)}</td><td>${dirComm(r.runningBalance)}</td></tr>`).join('')||'<tr><td colspan="6" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
 function settlementKadaiTable(rows){ return `<div class="tablewrap"><table><thead><tr><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name-bold">${esc(r.name)}</td><td class="num">${money(r.total)}</td><td class="num">${kadaiBalanceHtml(r.balance)}</td><td>${dirKadai(r.balance)}</td></tr>`).join('')||'<tr><td colspan="4" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
@@ -579,9 +684,9 @@ function renderCommissionImage(){
   const prev = n.settlement==='weekly' ? prevWtdCommSummaryForName(nameId,date) : {balance:0};
   const runningBalance = n.settlement==='weekly' ? prev.balance + day.balance : day.balance;
   const weeklyBlock = n.settlement==='weekly' ? `<div class="weekly-run-note">
-        <div class="wr"><span>ယခင် စုစုပေါင်း Balance</span><span class="mono">${commissionShareResultHtml(prev.balance)}</span></div>
-        <div class="wr"><span>ယနေ့ Balance ထပ်ပေါင်း</span><span class="mono">${commissionShareResultHtml(day.balance)}</span></div>
-        <div class="wr"><span>လက်ရှိ ရ/ပေး Balance</span><span class="mono">${commissionShareResultHtml(runningBalance)}</span></div>
+        <div class="wr"><span>ယခင် Balance</span><span class="mono">${commissionShareResultHtml(prev.balance)}</span></div>
+        <div class="wr"><span>ယနေ့ Balance</span><span class="mono">${commissionShareResultHtml(day.balance)}</span></div>
+        <div class="wr"><span>စုစုပေါင်း Balance</span><span class="mono">${commissionShareResultHtml(runningBalance)}</span></div>
       </div>` : '';
   document.getElementById('commissionImageContent').innerHTML=`
     <div class="commission-phone-card">
@@ -630,7 +735,7 @@ function shareCommissionCardText(){
   const day={ total:am.total+pm.total, pAmount:am.pAmount+pm.pAmount, cor:am.cor+pm.cor, balance:am.balance+pm.balance };
   const prev=n.settlement==='weekly'?prevWtdCommSummaryForName(nameId,date).balance:0;
   const running=n.settlement==='weekly'?prev+day.balance:day.balance;
-  const extra=n.settlement==='weekly'?`\nယခင် Balance: ${prev}\nလက်ရှိ စုစုပေါင်း Balance: ${running}`:'';
+  const extra=n.settlement==='weekly'?`\nယခင် Balance: ${prev}\nယနေ့ Balance: ${day.balance}\nစုစုပေါင်း Balance: ${running}`:'';
   const msg=`${n.name}\n${date}\nAM Result: ${am.balance}\nPM Result: ${pm.balance}\nDaily Result: ${day.balance}${extra}`;
   if(navigator.share){ navigator.share({title:n.name,text:msg}).catch(()=>{}); }
   else { navigator.clipboard?.writeText(msg).then(()=>toast('Share text copied')).catch(()=>alert(msg)); }
