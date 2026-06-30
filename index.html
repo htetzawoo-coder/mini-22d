@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dealer CPS + Multi Kadai v4</title>
+  <title>ဒိုင် CPS App v8 - Login Owner Control</title>
   <style>
     :root{
       --bg:#eef4fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#d8e2ef;
@@ -17,8 +17,10 @@
     .topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}
     .title{font-size:26px;font-weight:950}.subtitle{font-size:13px;color:var(--muted);font-weight:700;margin-top:3px;line-height:1.55}
     .tabs{display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#eaf2fb,#f8fafc);padding:10px 0}
-    .tab{border:1px solid var(--line);background:#fff;color:var(--ink);padding:10px 13px;border-radius:999px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(15,23,42,.04)}
-    .tab.active{background:var(--brand);border-color:var(--brand);color:#fff}.page{display:none}.page.active{display:block}
+    .tab{border:1px solid #1d4ed8;background:linear-gradient(180deg,#ffffff,#dbeafe);color:#0f172a;padding:10px 14px;border-radius:999px;font-weight:950;cursor:pointer;box-shadow:0 7px 0 #93c5fd,0 14px 22px rgba(15,23,42,.16);transform:translateY(0);transition:.12s ease}
+    .tab:hover{transform:translateY(-1px);box-shadow:0 8px 0 #93c5fd,0 16px 25px rgba(15,23,42,.18)}
+    .tab:active{transform:translateY(5px);box-shadow:0 2px 0 #93c5fd,0 6px 12px rgba(15,23,42,.14)}
+    .tab.active{background:linear-gradient(180deg,#3b82f6,#1d4ed8);border-color:#1e40af;color:#fff;box-shadow:0 7px 0 #1e3a8a,0 14px 22px rgba(37,99,235,.26)}.page{display:none}.page.active{display:block}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
     .card h2,.card h3{margin:0 0 12px}.card h2{font-size:20px}.card h3{font-size:17px}
     .grid{display:grid;gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -26,8 +28,13 @@
     label{display:block;margin:0 0 6px;color:var(--muted);font-size:12px;font-weight:900}
     input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);padding:10px 11px;font-size:15px;outline:none}
     input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-    button{border:0;background:var(--brand);color:#fff;border-radius:12px;padding:10px 13px;font-weight:950;cursor:pointer;box-shadow:0 8px 18px rgba(37,99,235,.16)}
-    button:hover{background:var(--brand2)}button.ok{background:var(--ok)}button.danger{background:var(--danger)}button.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}button.ghost:hover{background:var(--soft)}
+    button{border:1px solid rgba(15,23,42,.12);background:linear-gradient(180deg,#3b82f6,#1d4ed8);color:#fff;border-radius:14px;padding:10px 14px;font-weight:950;cursor:pointer;box-shadow:0 6px 0 #1e3a8a,0 12px 18px rgba(37,99,235,.22);transform:translateY(0);transition:.12s ease}
+    button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+    button:active{transform:translateY(5px);box-shadow:0 1px 0 #1e3a8a,0 6px 10px rgba(15,23,42,.18)}
+    button.ok{background:linear-gradient(180deg,#22c55e,#15803d);box-shadow:0 6px 0 #166534,0 12px 18px rgba(22,163,74,.2)}
+    button.danger{background:linear-gradient(180deg,#ef4444,#b91c1c);box-shadow:0 6px 0 #7f1d1d,0 12px 18px rgba(220,38,38,.22)}
+    button.ghost{background:linear-gradient(180deg,#ffffff,#f1f5f9);color:var(--ink);border:1px solid var(--line);box-shadow:0 5px 0 #cbd5e1,0 10px 16px rgba(15,23,42,.12)}
+    button.ghost:hover{background:linear-gradient(180deg,#ffffff,#e2e8f0)}
     .btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:16px;padding:11px 13px;font-weight:800;font-size:13px;line-height:1.65;margin-bottom:12px}.warnbox{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:16px;padding:11px 13px;font-weight:850;font-size:13px;line-height:1.65;margin-bottom:12px}
     .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:0 6px 18px rgba(15,23,42,.05)}.stat .k{font-size:12px;color:var(--muted);font-weight:900}.stat .v{font-size:20px;font-weight:950;margin-top:3px}
     .tablewrap{overflow:auto;border-radius:16px;border:1px solid var(--line);background:#fff}table{width:100%;border-collapse:collapse;background:#fff}th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;font-size:14px;vertical-align:middle;white-space:nowrap}th{background:#f1f5f9;color:#334155;font-size:12px;text-transform:uppercase;letter-spacing:.25px}tr:last-child td{border-bottom:0}.num{text-align:right;font-variant-numeric:tabular-nums}.center{text-align:center}.small{font-size:12px;color:var(--muted);line-height:1.45}.muted{color:var(--muted)}
@@ -37,8 +44,16 @@
     .image-board{background:linear-gradient(180deg,#ffffff,#f8fbff);border:1px solid #cfe0f5;border-radius:24px;padding:18px;box-shadow:0 18px 40px rgba(15,23,42,.08)}
     .image-header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.image-title{font-size:24px;font-weight:950}.image-sub{color:#64748b;font-size:12px;font-weight:800;margin-top:3px}.image-badge{padding:8px 10px;border-radius:999px;font-size:12px;font-weight:950;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
     .image-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}.sum-box{background:#fff;border:1px solid #dbe7f5;border-radius:18px;padding:12px}.sum-box .label{font-size:12px;color:#64748b;font-weight:900}.sum-box .big{font-size:22px;font-weight:950;margin-top:4px}
-    .section-title{font-size:16px;font-weight:950;margin:0 0 10px;color:#0f172a}.share-list{display:grid;gap:10px}.share-row{display:grid;grid-template-columns:1.3fr .7fr .8fr .9fr .9fr;gap:10px;align-items:center;padding:10px 12px;background:#fff;border:1px solid #dbe7f5;border-radius:16px}.share-row.head{background:#eff6ff;font-weight:950;color:#1e3a8a}.note-footer{margin-top:12px;padding-top:10px;border-top:1px dashed #d6e3f1;color:#64748b;font-size:12px;font-weight:800;line-height:1.5}.mono{font-variant-numeric:tabular-nums}.space{height:14px}
+    .section-title{font-size:16px;font-weight:950;margin:0 0 10px;color:#0f172a}.share-list{display:grid;gap:10px}.share-row{display:grid;grid-template-columns:1.3fr .7fr .8fr .9fr .9fr;gap:10px;align-items:center;padding:10px 12px;background:#fff;border:1px solid #dbe7f5;border-radius:16px}.share-row.head{background:#eff6ff;font-weight:950;color:#1e3a8a}.note-footer{margin-top:12px;padding-top:10px;border-top:1px dashed #d6e3f1;color:#64748b;font-size:12px;font-weight:800;line-height:1.5}.mono{font-variant-numeric:tabular-nums}.space{height:14px}.name-bold{font-weight:950;color:#0f172a}
     .toast{position:fixed;right:18px;bottom:18px;background:#0f172a;color:#fff;padding:12px 14px;border-radius:14px;box-shadow:var(--shadow);display:none;z-index:99;font-weight:900}
+    .auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(135deg,#dbeafe,#f8fafc)}
+    .auth-card{width:min(560px,100%);background:#fff;border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 24px 55px rgba(15,23,42,.16)}
+    .auth-title{font-size:25px;font-weight:950;margin:0 0 6px}.auth-sub{font-size:13px;color:#64748b;font-weight:800;line-height:1.5;margin-bottom:14px}
+    .auth-switch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.auth-switch button.active{background:linear-gradient(180deg,#22c55e,#15803d);box-shadow:0 6px 0 #166534}
+    .expired-box{max-width:620px;margin:12vh auto;background:#fff;border:1px solid #fecaca;border-radius:26px;padding:22px;box-shadow:0 24px 55px rgba(127,29,29,.16)}
+    .expired-title{font-size:24px;font-weight:950;color:#991b1b;margin-bottom:10px}.expired-msg{font-size:16px;line-height:1.8;white-space:pre-wrap}
+    .userbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.user-pill{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:950}
+    .owner-only{display:none}.owner-visible{display:inline-flex}
     .hidden{display:none!important}
     .commission-phone-card{max-width:430px;margin:0 auto;background:linear-gradient(180deg,#f9f4fa,#fff);border:8px solid #d7f0f3;border-radius:24px;padding:16px;box-shadow:0 12px 28px rgba(15,23,42,.08)}
     .commission-phone-card .head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
@@ -65,25 +80,70 @@
   </style>
 </head>
 <body>
-<div class="app">
+<div id="authGate" class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-title">ဒိုင် CPS App Login</div>
+    <div class="auth-sub">အသုံးပြုရန် Login / Register လုပ်ပါ။ Owner default account — <b>owner</b> / <b>123456</b></div>
+    <div class="auth-switch">
+      <button id="loginSwitch" class="active" onclick="showAuthMode('login')">Login ဝင်ရန်</button>
+      <button id="registerSwitch" class="ghost" onclick="showAuthMode('register')">Register လုပ်ရန်</button>
+    </div>
+    <div id="loginBox">
+      <div class="row two">
+        <div><label>Username</label><input id="loginUser" autocomplete="username" placeholder="username"></div>
+        <div><label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="password"></div>
+      </div>
+      <div class="space"></div>
+      <button class="ok" style="width:100%" onclick="loginAccount()">Login ဝင်မည်</button>
+    </div>
+    <div id="registerBox" class="hidden">
+      <div class="row two">
+        <div><label>Name</label><input id="regName" placeholder="သင့်နာမည်"></div>
+        <div><label>Username</label><input id="regUser" autocomplete="username" placeholder="username"></div>
+      </div>
+      <div class="space"></div>
+      <div class="row two">
+        <div><label>Password</label><input id="regPass" type="password" autocomplete="new-password" placeholder="password"></div>
+        <div><label>Confirm Password</label><input id="regPass2" type="password" autocomplete="new-password" placeholder="confirm"></div>
+      </div>
+      <div class="space"></div>
+      <button class="ok" style="width:100%" onclick="registerAccount()">Register ပြီး အသုံးပြုမည်</button>
+    </div>
+    <div id="authMsg" class="small" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<div id="expiredScreen" class="auth-shell hidden">
+  <div class="expired-box">
+    <div class="expired-title">အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ</div>
+    <div id="expiredMessage" class="expired-msg"></div>
+    <div class="space"></div>
+    <button class="ghost" onclick="logoutAccount()">Logout ထွက်ရန်</button>
+  </div>
+</div>
+
+<div class="app" id="mainApp" style="display:none">
   <div class="topbar">
     <div>
-      <div class="title">ဒိုင် စာရင်းရှင်း App v4</div>
-      <div class="subtitle">Multi ကာဒိုင် support + တစ်ပုံတည်း Master Summary Image + တပတ်ရှင်း cumulative balance version</div>
+      <div class="title">ဒိုင် စာရင်းရှင်း App v8</div>
+      <div class="subtitle">Register/Login + Owner Exp Control + 3D Buttons + Viber Share Image version</div>
     </div>
-    <div class="btns no-print">
-      <button class="ghost" onclick="exportBackup()">Backup JSON</button>
-      <button class="ghost" onclick="document.getElementById('importFile').click()">Restore</button>
+    <div class="btns no-print userbar">
+      <span id="currentUserBadge" class="user-pill">User</span>
+      <button class="ghost" onclick="exportBackup()">Backup သိမ်းရန်</button>
+      <button class="ghost" onclick="document.getElementById('importFile').click()">Backup ပြန်ထည့်ရန်</button>
+      <button class="danger" onclick="logoutAccount()">Logout ထွက်ရန်</button>
       <input id="importFile" class="hidden" type="file" accept="application/json" onchange="importBackup(event)">
     </div>
   </div>
 
   <div class="tabs no-print">
-    <button class="tab active" data-page="dashboard" onclick="showPage('dashboard')">Dashboard</button>
-    <button class="tab" data-page="daily" onclick="showPage('daily')">Daily Report</button>
-    <button class="tab" data-page="weekly" onclick="showPage('weekly')">Weekly Report</button>
-    <button class="tab" data-page="image" onclick="showPage('image')">Master Image</button>
-    <button class="tab" data-page="settings" onclick="showPage('settings')">Settings</button>
+    <button class="tab active" data-page="dashboard" onclick="showPage('dashboard')">စာရင်းသွင်း</button>
+    <button class="tab" data-page="daily" onclick="showPage('daily')">နေ့စဉ် စာရင်း</button>
+    <button class="tab" data-page="weekly" onclick="showPage('weekly')">အပတ်ရှင်း</button>
+    <button class="tab" data-page="image" onclick="showPage('image')">ပုံဖြင့် Share</button>
+    <button class="tab" data-page="settings" onclick="showPage('settings')">ပြင်ဆင်ချက်</button>
+    <button class="tab owner-only" data-page="owner" onclick="showPage('owner')">ပိုင်ရှင်ထိန်းချုပ်</button>
   </div>
 
   <section id="dashboard" class="page active">
@@ -150,7 +210,7 @@
     <div class="card">
       <div class="row two no-print">
         <div><label>Week Start / Monday</label><input id="weekStart" type="date" onchange="syncWeekToImage();renderAll()"></div>
-        <div class="btns"><button class="ghost" onclick="setThisWeek()">This Week</button><button class="ghost" onclick="printPage('weekly')">Print Weekly</button></div>
+        <div class="btns"><button class="ghost" onclick="setThisWeek()">ဒီအပတ်</button><button class="ghost" onclick="printPage('weekly')">Print Weekly</button></div>
       </div>
       <div class="space no-print"></div>
       <div id="weeklyReport"></div>
@@ -169,9 +229,11 @@
       <div class="row two">
         <div><label>ကော်မရှင် တဦးချင်း Share Name</label><select id="imageCommissionName" onchange="renderAll()"></select></div>
         <div class="btns">
-          <button class="ghost" onclick="setImageThisWeek()">This Week</button>
-          <button class="ghost" onclick="printImageCard('commissionImageCard')">Print Commission Image</button>
-          <button class="ghost" onclick="printImageCard('masterImageCard')">Print Master Image</button>
+          <button class="ghost" onclick="setImageThisWeek()">ဒီအပတ်</button>
+          <button class="ghost" onclick="shareImageToViber('commissionImageCard','commission-share.png')">တဦးချင်းပုံ Viber သို့ Share</button>
+          <button class="ghost" onclick="shareImageToViber('masterImageCard','master-summary.png')">စာရင်းချုပ်ပုံ Viber သို့ Share</button>
+          <button class="ghost" onclick="printImageCard('commissionImageCard')">တဦးချင်းပုံ Print</button>
+          <button class="ghost" onclick="printImageCard('masterImageCard')">စာရင်းချုပ်ပုံ Print</button>
         </div>
       </div>
     </div>
@@ -181,6 +243,56 @@
     <div class="space"></div>
     <div id="masterImageCard" class="image-board">
       <div id="masterImageContent"></div>
+    </div>
+  </section>
+
+
+  <section id="owner" class="page">
+    <div class="grid two">
+      <div class="card">
+        <h2>App Owner — User Account ထိန်းချုပ်ရန်</h2>
+        <div class="notice">
+          User register လုပ်ပြီးရင် အသုံးပြုနိုင်ပါတယ်။ Owner က Exp Date/Time သတ်မှတ်ထားပြီး ရက်ကျော်သွားလျှင် Login ဝင်ပြီးနောက် App မပြဘဲ အောက်က Notice Message ကိုသာ ပြပါမယ်။
+        </div>
+        <div class="row two">
+          <div>
+            <label>User ရွေးရန်</label>
+            <select id="ownerUserSelect" onchange="loadOwnerUserForm()"></select>
+          </div>
+          <div>
+            <label>Active</label>
+            <select id="ownerActive">
+              <option value="yes">အသုံးပြုခွင့်ပေးထားသည်</option>
+              <option value="no">ပိတ်ထားသည်</option>
+            </select>
+          </div>
+        </div>
+        <div class="space"></div>
+        <div class="row two">
+          <div>
+            <label>Exp Date / Time</label>
+            <input id="ownerExpireAt" type="datetime-local">
+          </div>
+          <div>
+            <label>Role</label>
+            <select id="ownerRole">
+              <option value="user">User</option>
+              <option value="owner">Owner</option>
+            </select>
+          </div>
+        </div>
+        <div class="space"></div>
+        <div>
+          <label>ရက်ကျော် / ပိတ်ထားချိန် ပြမည့် အကြောင်းကြားစာ</label>
+          <textarea id="ownerNotice" rows="5" placeholder="အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။"></textarea>
+        </div>
+        <div class="space"></div>
+        <button class="ok" onclick="saveOwnerUserControl()">User Control Save</button>
+      </div>
+      <div class="card">
+        <h2>User Accounts</h2>
+        <div id="ownerUsersTable"></div>
+      </div>
     </div>
   </section>
 
@@ -235,14 +347,150 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='dealer_cps_multi_kadai_v4';
+const KEY='dealer_cps_multi_kadai_v8';
+const ACCOUNTS_KEY='dealer_cps_accounts_v8';
+const SESSION_KEY='dealer_cps_session_v8';
 let state = loadState();
+let currentAccount=null;
+let appStarted=false;
 function uid(){ return 'id_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8); }
 function today(){ return new Date().toISOString().slice(0,10); }
 function num(v){ if(v===undefined||v===null||v==='') return 0; return Number(String(v).replace(/,/g,''))||0; }
 function money(v){ return (Number(v)||0).toLocaleString('en-US',{maximumFractionDigits:2}); }
 function esc(s){ return String(s??'').replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
 function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.style.display='block'; setTimeout(()=>el.style.display='none',1800); }
+
+function loadAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'[]'); }catch(e){ return []; } }
+function saveAccounts(accounts){ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts)); }
+function ensureOwnerAccount(){
+  const accounts=loadAccounts();
+  if(!accounts.some(a=>a.role==='owner')){
+    accounts.push({id:uid(),displayName:'App Owner',username:'owner',password:'123456',role:'owner',active:true,expireAt:'',notice:'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။',createdAt:new Date().toISOString()});
+    saveAccounts(accounts);
+  }
+}
+function showAuthMode(mode){
+  document.getElementById('loginBox').classList.toggle('hidden', mode!=='login');
+  document.getElementById('registerBox').classList.toggle('hidden', mode!=='register');
+  document.getElementById('loginSwitch').classList.toggle('active', mode==='login');
+  document.getElementById('registerSwitch').classList.toggle('active', mode==='register');
+  document.getElementById('authMsg').textContent='';
+}
+function authMsg(msg,bad=true){ const el=document.getElementById('authMsg'); el.style.color=bad?'#b91c1c':'#166534'; el.textContent=msg; }
+function isAccountExpired(acc){
+  if(!acc) return true;
+  if(acc.role==='owner') return false;
+  if(acc.active===false) return true;
+  if(acc.expireAt && new Date(acc.expireAt).getTime() < Date.now()) return true;
+  return false;
+}
+function getAccountNotice(acc){
+  return (acc && acc.notice) ? acc.notice : 'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။';
+}
+function loginAccount(){
+  ensureOwnerAccount();
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const acc=loadAccounts().find(a=>a.username===u && a.password===p);
+  if(!acc){ authMsg('Username သို့မဟုတ် Password မမှန်ပါ။'); return; }
+  sessionStorage.setItem(SESSION_KEY, acc.id);
+  if(isAccountExpired(acc)){ showExpiredOnly(acc); return; }
+  currentAccount=acc;
+  startAuthenticatedApp();
+}
+function registerAccount(){
+  ensureOwnerAccount();
+  const displayName=document.getElementById('regName').value.trim() || 'User';
+  const username=document.getElementById('regUser').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const pass2=document.getElementById('regPass2').value;
+  if(!username || !pass){ authMsg('Username နှင့် Password ထည့်ပါ။'); return; }
+  if(pass!==pass2){ authMsg('Password နှစ်ခု မတူပါ။'); return; }
+  const accounts=loadAccounts();
+  if(accounts.some(a=>a.username===username)){ authMsg('ဒီ Username ရှိပြီးသားဖြစ်ပါတယ်။'); return; }
+  const acc={id:uid(),displayName,username,password:pass,role:'user',active:true,expireAt:'',notice:'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။',createdAt:new Date().toISOString()};
+  accounts.push(acc); saveAccounts(accounts);
+  sessionStorage.setItem(SESSION_KEY, acc.id);
+  currentAccount=acc;
+  startAuthenticatedApp();
+}
+function showExpiredOnly(acc){
+  document.getElementById('authGate').classList.add('hidden');
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('expiredScreen').classList.remove('hidden');
+  document.getElementById('expiredMessage').textContent=getAccountNotice(acc);
+}
+function logoutAccount(){
+  sessionStorage.removeItem(SESSION_KEY);
+  currentAccount=null;
+  location.reload();
+}
+function startAuthenticatedApp(){
+  document.getElementById('authGate').classList.add('hidden');
+  document.getElementById('expiredScreen').classList.add('hidden');
+  document.getElementById('mainApp').style.display='';
+  applyAuthUI();
+  if(!appStarted){ init(); appStarted=true; } else renderAll();
+}
+function applyAuthUI(){
+  if(!currentAccount) return;
+  const badge=document.getElementById('currentUserBadge');
+  if(badge) badge.textContent=`${currentAccount.displayName||currentAccount.username} (${currentAccount.role==='owner'?'Owner':'User'})`;
+  document.querySelectorAll('.owner-only').forEach(el=>{
+    el.classList.toggle('owner-visible', currentAccount.role==='owner');
+    el.style.display=currentAccount.role==='owner'?'inline-flex':'none';
+  });
+}
+function initAuth(){
+  ensureOwnerAccount();
+  const id=sessionStorage.getItem(SESSION_KEY);
+  if(!id){ document.getElementById('authGate').classList.remove('hidden'); return; }
+  const acc=loadAccounts().find(a=>a.id===id);
+  if(!acc){ sessionStorage.removeItem(SESSION_KEY); document.getElementById('authGate').classList.remove('hidden'); return; }
+  if(isAccountExpired(acc)){ showExpiredOnly(acc); return; }
+  currentAccount=acc;
+  startAuthenticatedApp();
+}
+function renderOwnerPanel(){
+  const sel=document.getElementById('ownerUserSelect');
+  const table=document.getElementById('ownerUsersTable');
+  if(!sel || !table) return;
+  if(!currentAccount || currentAccount.role!=='owner'){
+    table.innerHTML='<div class="empty">Owner account ဖြင့် Login ဝင်မှ ကြည့်နိုင်ပါသည်။</div>';
+    return;
+  }
+  const accounts=loadAccounts();
+  const cur=sel.value;
+  sel.innerHTML=accounts.map(a=>`<option value="${a.id}">${esc(a.displayName||a.username)} — ${esc(a.username)}</option>`).join('');
+  if(cur && [...sel.options].some(o=>o.value===cur)) sel.value=cur;
+  else if(sel.options.length) sel.selectedIndex=0;
+  loadOwnerUserForm(false);
+  table.innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Active</th><th>Exp Date/Time</th><th>Status</th></tr></thead><tbody>${accounts.map(a=>`<tr><td class="name-bold">${esc(a.displayName||'-')}</td><td>${esc(a.username)}</td><td>${a.role==='owner'?'Owner':'User'}</td><td>${a.active!==false?'ON':'OFF'}</td><td>${a.expireAt?esc(a.expireAt):'<span class="muted">မသတ်မှတ်ထား</span>'}</td><td>${isAccountExpired(a)?'<span class="pill bad">Expired/Blocked</span>':'<span class="pill ok">Active</span>'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function loadOwnerUserForm(keepNotice=true){
+  const sel=document.getElementById('ownerUserSelect'); if(!sel) return;
+  const acc=loadAccounts().find(a=>a.id===sel.value); if(!acc) return;
+  document.getElementById('ownerActive').value=acc.active===false?'no':'yes';
+  document.getElementById('ownerExpireAt').value=acc.expireAt||'';
+  document.getElementById('ownerRole').value=acc.role||'user';
+  if(keepNotice!==false || !document.getElementById('ownerNotice').value) document.getElementById('ownerNotice').value=acc.notice||'';
+}
+function saveOwnerUserControl(){
+  if(!currentAccount || currentAccount.role!=='owner'){ toast('Owner only'); return; }
+  const id=document.getElementById('ownerUserSelect').value;
+  const accounts=loadAccounts();
+  const acc=accounts.find(a=>a.id===id);
+  if(!acc) return;
+  acc.active=document.getElementById('ownerActive').value==='yes';
+  acc.expireAt=document.getElementById('ownerExpireAt').value;
+  acc.role=document.getElementById('ownerRole').value;
+  acc.notice=document.getElementById('ownerNotice').value.trim() || 'အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးပါပြီ။ App Owner ကို ဆက်သွယ်ပါ။';
+  saveAccounts(accounts);
+  if(acc.id===currentAccount.id){ currentAccount=acc; sessionStorage.setItem(SESSION_KEY, acc.id); }
+  renderOwnerPanel();
+  toast('User account control save ပြီးပါပြီ');
+}
+
 function defaultState(){ return { commissions:[ {id:uid(),name:'နမူနာနေ့ရှင်း',settlement:'daily',corPct:10,pRate:80,active:true}, {id:uid(),name:'နမူနာတပတ်ရှင်း',settlement:'weekly',corPct:10,pRate:80,active:true} ], kadais:[ {id:uid(),name:'ကာဒိုင် 1',corPct:10,pRate:80,active:true} ], commissionEntries:[], kadaiEntries:[] }; }
 function loadState(){ try{ const raw=localStorage.getItem(KEY); if(!raw) return defaultState(); const o=JSON.parse(raw); o.commissions=o.commissions||[]; o.kadais=o.kadais||[]; o.commissionEntries=o.commissionEntries||[]; o.kadaiEntries=o.kadaiEntries||[]; return o; }catch(e){ return defaultState(); } }
 function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
@@ -309,15 +557,15 @@ function masterTotals(date){ const commRows=buildCommissionSettlementRows(date),
 
 function renderStats(){ const date=document.getElementById('viewDate').value||today(); const comm=sumComm(filterCommission(date,'ALL')); const kd=sumKadai(filterKadai(date,'ALL')); const totals=masterTotals(date); document.getElementById('dashStats').innerHTML=[ ['ကော်မရှင် Today Balance',commBalanceHtml(comm.balance)], ['ကာဒိုင် Today Balance',kadaiBalanceHtml(kd.balance)], ['ကော်မရှင် ရမည်',profitHtml(totals.commReceive)], ['ကာဒိုင် ပေးရမည်',profitHtml(-totals.kadaiPay)], ['Net P/L',profitHtml(totals.net)] ].map(x=>`<div class="stat"><div class="k">${x[0]}</div><div class="v">${x[1]}</div></div>`).join(''); }
 function renderHints(){ const c=commById(document.getElementById('entryName').value); document.getElementById('entryHint').textContent=c.name?`Selected: ${c.name} | Cor ${money(c.corPct)}% | P Rate ${money(c.pRate)} | ${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}`:''; const k=kadaiById(document.getElementById('kadaiEntryName').value); document.getElementById('kadaiHint').textContent=k.name?`Selected: ${k.name} | Cor ${money(k.corPct)}% | P Rate ${money(k.pRate)}`:''; }
-function renderCommTable(){ const rows=state.commissions.map(n=>`<tr><td>${esc(n.name)}</td><td>${n.settlement==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td><button class="ghost" onclick="editComm('${n.id}')">Edit</button> <button class="danger" onclick="delComm('${n.id}')">Del</button></td></tr>`).join(''); document.getElementById('commTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">Cor%</th><th class="num">P Rate</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
-function renderKadaiTable(){ const rows=state.kadais.map(n=>`<tr><td>${esc(n.name)}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td><button class="ghost" onclick="editKadai('${n.id}')">Edit</button> <button class="danger" onclick="delKadai('${n.id}')">Del</button></td></tr>`).join(''); document.getElementById('kadaiTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Cor%</th><th class="num">P Rate</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="4" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
-function commissionEntryTable(date,session='ALL'){ const list=filterCommission(date,session); const rows=list.map(e=>{ const c=calcCommissionEntry(e); return `<tr><td>${e.date}</td><td>${e.session}</td><td>${esc(c.name)}</td><td>${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${commBalanceHtml(c.balance)}</td><td>${dirComm(c.balance)}</td><td class="no-print"><button class="danger" onclick="delCommEntry('${e.id}')">Del</button></td></tr>`; }).join(''); const s=sumComm(list); return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>Name</th><th>Type</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="11" class="center muted">No entries</td></tr>'}<tr><th colspan="4">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${commBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`; }
-function kadaiEntryTable(date,session='ALL'){ const list=filterKadai(date,session); const rows=list.map(e=>{ const c=calcKadaiEntry(e); return `<tr><td>${e.date}</td><td>${e.session}</td><td>${esc(c.name)}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${kadaiBalanceHtml(c.balance)}</td><td>${dirKadai(c.balance)}</td><td class="no-print"><button class="danger" onclick="delKadaiEntry('${e.id}')">Del</button></td></tr>`; }).join(''); const s=sumKadai(list); return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="10" class="center muted">No entries</td></tr>'}<tr><th colspan="3">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${kadaiBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`; }
+function renderCommTable(){ const rows=state.commissions.map(n=>`<tr><td class="name-bold">${esc(n.name)}</td><td>${n.settlement==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td><button class="ghost" onclick="editComm('${n.id}')">Edit</button> <button class="danger" onclick="delComm('${n.id}')">Del</button></td></tr>`).join(''); document.getElementById('commTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">Cor%</th><th class="num">P Rate</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
+function renderKadaiTable(){ const rows=state.kadais.map(n=>`<tr><td class="name-bold">${esc(n.name)}</td><td class="num">${money(n.corPct)}%</td><td class="num">${money(n.pRate)}</td><td><button class="ghost" onclick="editKadai('${n.id}')">Edit</button> <button class="danger" onclick="delKadai('${n.id}')">Del</button></td></tr>`).join(''); document.getElementById('kadaiTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Cor%</th><th class="num">P Rate</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="4" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
+function commissionEntryTable(date,session='ALL'){ const list=filterCommission(date,session); const rows=list.map(e=>{ const c=calcCommissionEntry(e); return `<tr><td>${e.date}</td><td>${e.session}</td><td class="name-bold">${esc(c.name)}</td><td>${c.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${commBalanceHtml(c.balance)}</td><td>${dirComm(c.balance)}</td><td class="no-print"><button class="danger" onclick="delCommEntry('${e.id}')">Del</button></td></tr>`; }).join(''); const s=sumComm(list); return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>Name</th><th>Type</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="11" class="center muted">No entries</td></tr>'}<tr><th colspan="4">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${commBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`; }
+function kadaiEntryTable(date,session='ALL'){ const list=filterKadai(date,session); const rows=list.map(e=>{ const c=calcKadaiEntry(e); return `<tr><td>${e.date}</td><td>${e.session}</td><td class="name-bold">${esc(c.name)}</td><td class="num">${money(c.total)}</td><td class="num">${money(c.cor)}</td><td class="num">${money(c.pAmount)}</td><td class="num">${money(c.payout)}</td><td class="num">${kadaiBalanceHtml(c.balance)}</td><td>${dirKadai(c.balance)}</td><td class="no-print"><button class="danger" onclick="delKadaiEntry('${e.id}')">Del</button></td></tr>`; }).join(''); const s=sumKadai(list); return `<div class="tablewrap"><table><thead><tr><th>Date</th><th>AM/PM</th><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Amount</th><th class="num">P Payout</th><th class="num">Balance</th><th>Direction</th><th class="no-print">Action</th></tr></thead><tbody>${rows||'<tr><td colspan="10" class="center muted">No entries</td></tr>'}<tr><th colspan="3">Total</th><th class="num">${money(s.total)}</th><th class="num">${money(s.cor)}</th><th class="num">${money(s.pAmount)}</th><th class="num">${money(s.payout)}</th><th class="num">${kadaiBalanceHtml(s.balance)}</th><th></th><th></th></tr></tbody></table></div>`; }
 function renderDashboardTable(){ const date=document.getElementById('viewDate').value||today(); const session=document.getElementById('viewSession').value||'ALL'; const totals=masterTotals(date); let html=`<h2 style="margin:0 0 12px">${date} Dashboard</h2><div class="small">တပတ်ရှင်း rows များတွင် Running Balance က Monday မှ ယနေ့အထိ စုပေါင်းထားသော amount ဖြစ်ပါတယ်။</div><div class="space"></div>`; html+=`<div class="grid two"><div><h3>ကော်မရှင် Entries</h3>${commissionEntryTable(date,session)}</div><div><h3>ကာဒိုင် Entries</h3>${kadaiEntryTable(date,session)}</div></div>`; html+=`<div class="space"></div><div class="grid two"><div><h3>ကော်မရှင် စာရင်းရှင်းချုပ်</h3>${settlementCommTable(totals.commRows)}</div><div><h3>ကာဒိုင် စာရင်းချုပ်</h3>${settlementKadaiTable(totals.kadaiRows)}</div></div>`; document.getElementById('dashboardTable').innerHTML=html; }
-function settlementCommTable(rows){ return `<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">ယခင် Balance</th><th class="num">ယနေ့ Balance</th><th class="num">စုစုပေါင်း Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${r.type==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${r.type==='weekly'?commBalanceHtml(r.prevBalance):'<span class="muted">-</span>'}</td><td class="num">${commBalanceHtml(r.todayBalance)}</td><td class="num">${commBalanceHtml(r.runningBalance)}</td><td>${dirComm(r.runningBalance)}</td></tr>`).join('')||'<tr><td colspan="6" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
-function settlementKadaiTable(rows){ return `<div class="tablewrap"><table><thead><tr><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${money(r.total)}</td><td class="num">${kadaiBalanceHtml(r.balance)}</td><td>${dirKadai(r.balance)}</td></tr>`).join('')||'<tr><td colspan="4" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
+function settlementCommTable(rows){ return `<div class="tablewrap"><table><thead><tr><th>Name</th><th>Type</th><th class="num">ယခင် Balance</th><th class="num">ယနေ့ Balance</th><th class="num">စုစုပေါင်း Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name-bold">${esc(r.name)}</td><td>${r.type==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</td><td class="num">${r.type==='weekly'?commBalanceHtml(r.prevBalance):'<span class="muted">-</span>'}</td><td class="num">${commBalanceHtml(r.todayBalance)}</td><td class="num">${commBalanceHtml(r.runningBalance)}</td><td>${dirComm(r.runningBalance)}</td></tr>`).join('')||'<tr><td colspan="6" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
+function settlementKadaiTable(rows){ return `<div class="tablewrap"><table><thead><tr><th>ကာဒိုင်</th><th class="num">Total</th><th class="num">Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name-bold">${esc(r.name)}</td><td class="num">${money(r.total)}</td><td class="num">${kadaiBalanceHtml(r.balance)}</td><td>${dirKadai(r.balance)}</td></tr>`).join('')||'<tr><td colspan="4" class="center muted">No data</td></tr>'}</tbody></table></div>`; }
 function renderDailyReport(){ const date=document.getElementById('reportDate').value||today(); const session=document.getElementById('reportSession').value||'ALL'; const totals=masterTotals(date); document.getElementById('dailyReport').innerHTML=`<div class="stats"><div class="stat"><div class="k">ကော်မရှင် ရမည်</div><div class="v">${profitHtml(totals.commReceive)}</div></div><div class="stat"><div class="k">ကော်မရှင် ပေးရ</div><div class="v">${profitHtml(-totals.commPay)}</div></div><div class="stat"><div class="k">ကာဒိုင် ရမည်</div><div class="v">${profitHtml(totals.kadaiReceive)}</div></div><div class="stat"><div class="k">ကာဒိုင် ပေးရ</div><div class="v">${profitHtml(-totals.kadaiPay)}</div></div><div class="stat"><div class="k">Net</div><div class="v">${profitHtml(totals.net)}</div></div></div><div class="grid two"><div><h3>ကော်မရှင် စာရင်းရှင်းချုပ်</h3>${settlementCommTable(totals.commRows)}</div><div><h3>ကာဒိုင် စာရင်းရှင်းချုပ်</h3>${settlementKadaiTable(totals.kadaiRows)}</div></div><div class="space"></div><div class="grid two"><div><h3>ကော်မရှင် Entries</h3>${commissionEntryTable(date,session)}</div><div><h3>ကာဒိုင် Entries</h3>${kadaiEntryTable(date,session)}</div></div>`; }
-function renderWeeklyReport(){ const start=document.getElementById('weekStart').value||mondayOf(today()); const end=dateRange(start,start)[0]?dateRange(start,start):[]; const dates=dateRange(start, new Date(new Date(start+'T00:00:00').getTime()+4*86400000).toISOString().slice(0,10)); let rows=[]; activeCommissions().filter(x=>x.settlement==='weekly').forEach(n=>{ const list=state.commissionEntries.filter(e=>e.nameId===n.id && dates.includes(e.date)); const s=sumComm(list); if(s.total!==0||s.balance!==0) rows.push({name:n.name,total:s.total,balance:s.balance,cor:s.cor,payout:s.payout}); }); document.getElementById('weeklyReport').innerHTML=`<h2 style="margin:0 0 12px">Weekly Report (${dates[0]} to ${dates[dates.length-1]})</h2><div class="notice">တပတ်ရှင်းစာရင်းသည် နေ့စဉ် balance ကို တနေ့ပြီးတနေ့ စုပေါင်းထားသော Running Balance ဖြစ်ပါတယ်။</div><div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Payout</th><th class="num">Running Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${money(r.total)}</td><td class="num">${money(r.cor)}</td><td class="num">${money(r.payout)}</td><td class="num">${commBalanceHtml(r.balance)}</td><td>${dirComm(r.balance)}</td></tr>`).join('')||'<tr><td colspan="6" class="center muted">No weekly data</td></tr>'}</tbody></table></div>`; }
+function renderWeeklyReport(){ const start=document.getElementById('weekStart').value||mondayOf(today()); const end=dateRange(start,start)[0]?dateRange(start,start):[]; const dates=dateRange(start, new Date(new Date(start+'T00:00:00').getTime()+4*86400000).toISOString().slice(0,10)); let rows=[]; activeCommissions().filter(x=>x.settlement==='weekly').forEach(n=>{ const list=state.commissionEntries.filter(e=>e.nameId===n.id && dates.includes(e.date)); const s=sumComm(list); if(s.total!==0||s.balance!==0) rows.push({name:n.name,total:s.total,balance:s.balance,cor:s.cor,payout:s.payout}); }); document.getElementById('weeklyReport').innerHTML=`<h2 style="margin:0 0 12px">Weekly Report (${dates[0]} to ${dates[dates.length-1]})</h2><div class="notice">တပတ်ရှင်းစာရင်းသည် နေ့စဉ် balance ကို တနေ့ပြီးတနေ့ စုပေါင်းထားသော Running Balance ဖြစ်ပါတယ်။</div><div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">Total</th><th class="num">Cor</th><th class="num">P Payout</th><th class="num">Running Balance</th><th>Status</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name-bold">${esc(r.name)}</td><td class="num">${money(r.total)}</td><td class="num">${money(r.cor)}</td><td class="num">${money(r.payout)}</td><td class="num">${commBalanceHtml(r.balance)}</td><td>${dirComm(r.balance)}</td></tr>`).join('')||'<tr><td colspan="6" class="center muted">No weekly data</td></tr>'}</tbody></table></div>`; }
 function commissionShareResultHtml(v){ if(v>0) return `<span class="receivefrom">ငွေရရန် ${money(v)}</span>`; if(v<0) return `<span class="payto">ငွေပေးရန် ${money(Math.abs(v))}</span>`; return `<span class="zero">ရှင်းပြီး 0</span>`; }
 function nameSessionSummary(nameId,date,session){ const list=state.commissionEntries.filter(e=>e.nameId===nameId && e.date===date && e.session===session); return sumComm(list); }
 function renderCommissionImage(){
@@ -366,8 +614,8 @@ function renderCommissionImage(){
       </div>
       ${weeklyBlock}
       <div class="share-bars no-print">
-        <button class="save" onclick="printImageCard('commissionImageCard')">Save Image</button>
-        <button class="share" onclick="shareCommissionCardText()">Image Share</button>
+        <button class="save" onclick="downloadElementImage('commissionImageCard','commission-share.png')">ပုံသိမ်းရန်</button>
+        <button class="share" onclick="shareImageToViber('commissionImageCard','commission-share.png')">Viber သို့ Share</button>
       </div>
     </div>
     <div class="note-footer">Date: ${date} • ${n.settlement==='daily'?'နေ့ရှင်း':'တပတ်ရှင်း'} • ဒီ card ကို screenshot ယူပြီး Viber မှတဆင့် တဦးချင်းပို့နိုင်ပါတယ်။</div>`;
@@ -387,8 +635,8 @@ function shareCommissionCardText(){
   if(navigator.share){ navigator.share({title:n.name,text:msg}).catch(()=>{}); }
   else { navigator.clipboard?.writeText(msg).then(()=>toast('Share text copied')).catch(()=>alert(msg)); }
 }
-function renderMasterImage(){ const date=document.getElementById('imageDate').value||today(); const wstart=document.getElementById('imageWeekStart').value||mondayOf(date); const totals=masterTotals(date); const weekDates=dateRange(wstart,date); const weeklyRows=buildCommissionSettlementRows(date).filter(r=>r.type==='weekly'); const commSection = totals.commRows.length ? totals.commRows.map(r=>`<div class="share-row"><div>${esc(r.name)} ${r.type==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</div><div class="num mono">${r.type==='weekly'?commBalanceHtml(r.prevBalance):'<span class="muted">-</span>'}</div><div class="num mono">${commBalanceHtml(r.todayBalance)}</div><div class="num mono">${commBalanceHtml(r.runningBalance)}</div><div>${dirComm(r.runningBalance)}</div></div>`).join('') : '<div class="empty">ကော်မရှင် summary မရှိသေးပါ</div>';
-  const kadaiSection = totals.kadaiRows.length ? totals.kadaiRows.map(r=>`<div class="share-row"><div>${esc(r.name)}</div><div class="num mono">${money(r.total)}</div><div class="num mono">${kadaiBalanceHtml(r.balance)}</div><div>${r.balance>0?'ဒိုင် ပေးရမည်':r.balance<0?'ဒိုင် ရမည်':'ရှင်းပြီး'}</div><div>${dirKadai(r.balance)}</div></div>`).join('') : '<div class="empty">ကာဒိုင် summary မရှိသေးပါ</div>';
+function renderMasterImage(){ const date=document.getElementById('imageDate').value||today(); const wstart=document.getElementById('imageWeekStart').value||mondayOf(date); const totals=masterTotals(date); const weekDates=dateRange(wstart,date); const weeklyRows=buildCommissionSettlementRows(date).filter(r=>r.type==='weekly'); const commSection = totals.commRows.length ? totals.commRows.map(r=>`<div class="share-row"><div class="name-bold">${esc(r.name)} ${r.type==='daily'?'<span class="pill ok">နေ့ရှင်း</span>':'<span class="pill warn">တပတ်ရှင်း</span>'}</div><div class="num mono">${r.type==='weekly'?commBalanceHtml(r.prevBalance):'<span class="muted">-</span>'}</div><div class="num mono">${commBalanceHtml(r.todayBalance)}</div><div class="num mono">${commBalanceHtml(r.runningBalance)}</div><div>${dirComm(r.runningBalance)}</div></div>`).join('') : '<div class="empty">ကော်မရှင် summary မရှိသေးပါ</div>';
+  const kadaiSection = totals.kadaiRows.length ? totals.kadaiRows.map(r=>`<div class="share-row"><div class="name-bold">${esc(r.name)}</div><div class="num mono">${money(r.total)}</div><div class="num mono">${kadaiBalanceHtml(r.balance)}</div><div>${r.balance>0?'ဒိုင် ပေးရမည်':r.balance<0?'ဒိုင် ရမည်':'ရှင်းပြီး'}</div><div>${dirKadai(r.balance)}</div></div>`).join('') : '<div class="empty">ကာဒိုင် summary မရှိသေးပါ</div>';
   const html=`<div class="image-header"><div><div class="image-title">ဒိုင် Master Summary</div><div class="image-sub mono">Date: ${date} • Weekly Running: ${weekDates[0]} to ${weekDates[weekDates.length-1]}</div></div><div class="image-badge">One Image Settlement Board</div></div>
   <div class="image-summary"><div class="sum-box"><div class="label">ကော်မရှင်ထံမှ ရမည်</div><div class="big">${profitHtml(totals.commReceive)}</div></div><div class="sum-box"><div class="label">ကော်မရှင်ထံ ပေးရ</div><div class="big">${profitHtml(-totals.commPay)}</div></div><div class="sum-box"><div class="label">ကာဒိုင်ထံမှ ရမည်</div><div class="big">${profitHtml(totals.kadaiReceive)}</div></div><div class="sum-box"><div class="label">ကာဒိုင်ထံ ပေးရ</div><div class="big">${profitHtml(-totals.kadaiPay)}</div></div></div>
   <div class="image-summary"><div class="sum-box"><div class="label">Net P/L</div><div class="big">${profitHtml(totals.net)}</div></div><div class="sum-box"><div class="label">ကော်မရှင် Rows</div><div class="big">${totals.commRows.length}</div></div><div class="sum-box"><div class="label">ကာဒိုင် Rows</div><div class="big">${totals.kadaiRows.length}</div></div><div class="sum-box"><div class="label">သုံးနည်း</div><div class="big" style="font-size:18px">Screenshot & Share</div></div></div>
@@ -405,14 +653,67 @@ function renderMasterImage(){ const date=document.getElementById('imageDate').va
 }
 function copyTodayText(){ const date=document.getElementById('viewDate').value||today(); const t=masterTotals(date); const lines=[`ဒိုင် Master Summary ${date}`,`ကော်မရှင်ထံမှ ရမည်: ${money(t.commReceive)}`,`ကော်မရှင်ထံ ပေးရ: ${money(t.commPay)}`,`ကာဒိုင်ထံမှ ရမည်: ${money(t.kadaiReceive)}`,`ကာဒိုင်ထံ ပေးရ: ${money(t.kadaiPay)}`,`Net P/L: ${money(t.net)}`]; navigator.clipboard?.writeText(lines.join('\n')).then(()=>toast('Copy ပြီးပါပြီ')).catch(()=>alert(lines.join('\n'))); }
 function printPage(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('print-target')); document.getElementById(id).classList.add('print-target'); window.print(); }
+
+async function elementToPngBlob(elementId){
+  const node=document.getElementById(elementId);
+  if(!node) throw new Error('Image card မတွေ့ပါ');
+  const clone=node.cloneNode(true);
+  clone.querySelectorAll('.no-print').forEach(x=>x.remove());
+  const rect=node.getBoundingClientRect();
+  const width=Math.ceil(rect.width || 430);
+  const height=Math.ceil(rect.height || 650);
+  const styleText=Array.from(document.querySelectorAll('style')).map(s=>s.textContent).join('\n');
+  const xhtml=`<div xmlns="http://www.w3.org/1999/xhtml"><style>${styleText}</style>${clone.outerHTML}</div>`;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><foreignObject width="100%" height="100%">${xhtml}</foreignObject></svg>`;
+  const svgBlob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
+  const url=URL.createObjectURL(svgBlob);
+  const img=new Image();
+  await new Promise((resolve,reject)=>{ img.onload=resolve; img.onerror=reject; img.src=url; });
+  const scale=Math.min(3, window.devicePixelRatio || 2);
+  const canvas=document.createElement('canvas');
+  canvas.width=width*scale; canvas.height=height*scale;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.scale(scale,scale);
+  ctx.drawImage(img,0,0,width,height);
+  URL.revokeObjectURL(url);
+  return await new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.95));
+}
+async function downloadElementImage(elementId,filename='share-image.png'){
+  try{
+    const blob=await elementToPngBlob(elementId);
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Image save ပြီးပါပြီ');
+  }catch(e){ alert('Image save မရပါ။ Screenshot ယူပြီး Viber မှ share လုပ်နိုင်ပါတယ်။'); }
+}
+async function shareImageToViber(elementId,filename='share-image.png'){
+  try{
+    const blob=await elementToPngBlob(elementId);
+    const file=new File([blob],filename,{type:'image/png'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:'ဒိုင် စာရင်းပုံ',text:'ဒိုင် စာရင်းပုံ'});
+      toast('Share ပြီးပါပြီ');
+    }else if(navigator.share){
+      await navigator.share({title:'ဒိုင် စာရင်း',text:'Viber တွင် ပုံအဖြစ်ပို့ရန် Save Image သို့မဟုတ် Screenshot ကို အသုံးပြုပါ။'});
+    }else{
+      await downloadElementImage(elementId,filename);
+      alert('Browser မှ direct Viber share မပံ့ပိုးပါ။ Image ကို save ပြီး Viber မှာပို့ပါ။');
+    }
+  }catch(e){
+    alert('Direct share မရပါ။ ဖုန်းမှာ screenshot ယူပြီး Viber မှာပို့နိုင်ပါတယ်။');
+  }
+}
+
 function printImageCard(id){ const el=document.getElementById(id); const holder=document.createElement('div'); holder.className='page print-target'; holder.appendChild(el.cloneNode(true)); document.body.appendChild(holder); window.print(); holder.remove(); }
 function clearToday(){ const d=document.getElementById('viewDate').value||today(); if(!confirm(`${d} ရက်နေ့စာရင်းအားလုံး ဖျက်မလား?`)) return; state.commissionEntries=state.commissionEntries.filter(e=>e.date!==d); state.kadaiEntries=state.kadaiEntries.filter(e=>e.date!==d); saveState(); renderAll(); toast('ယနေ့စာရင်း ဖျက်ပြီးပါပြီ'); }
 function resetAll(){ if(!confirm('App data အားလုံး Reset လုပ်မလား?')) return; localStorage.removeItem(KEY); state=defaultState(); saveState(); init(); toast('Reset ပြီးပါပြီ'); }
 function exportBackup(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dealer-cps-multi-kadai-v4-'+today()+'.json'; a.click(); URL.revokeObjectURL(a.href); }
 function importBackup(ev){ const file=ev.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=()=>{ try{ const obj=JSON.parse(r.result); if(!obj.commissions||!obj.kadais) throw new Error('bad'); state=obj; saveState(); init(); toast('Restore ပြီးပါပြီ'); }catch(e){ alert('Backup file မမှန်ပါ'); } }; r.readAsText(file); }
-function renderAll(){ fillSelects(); renderHints(); renderCommTable(); renderKadaiTable(); renderStats(); renderDashboardTable(); renderDailyReport(); renderWeeklyReport(); renderCommissionImage(); renderMasterImage(); }
+function renderAll(){ fillSelects(); renderHints(); renderCommTable(); renderKadaiTable(); renderStats(); renderDashboardTable(); renderDailyReport(); renderWeeklyReport(); renderCommissionImage(); renderMasterImage(); renderOwnerPanel(); }
 function init(){ setDates(); fillSelects(); renderAll(); }
-init();
+initAuth();
 </script>
 </body>
 </html>
